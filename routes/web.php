@@ -31,10 +31,6 @@ Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class
 
 Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index']);
-    // outras rotas protegidas...
-});
 
 
 Route::get('/painel/empresa/editar', EditarEmpresa::class)->name('empresa.editar')->middleware('auth');
