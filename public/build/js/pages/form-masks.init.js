@@ -80,3 +80,11 @@ if (document.querySelector("#cleave-phone")) {
         blocks: [0, 3, 3, 4]
     });
 }
+
+if (document.querySelector("#cnpj")) {
+    var cleaveBlocks = new Cleave('#cnpj', {
+        delimiters: ['.', '.', '/', '-'],
+        blocks: [2, 3, 3, 4, 2],
+        numericOnly: true
+    });
+}
