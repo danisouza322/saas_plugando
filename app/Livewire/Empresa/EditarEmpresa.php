@@ -14,6 +14,14 @@ class EditarEmpresa extends Component
     public $cnpj;
     public $plano;
     public $email;
+    public $cep;
+    public $endereco;
+    public $numero;
+    public $bairro;
+    public $complemento;
+    public $estado;
+    public $cidade;
+
     public $buscandoDados = false;
 
 
@@ -32,6 +40,13 @@ class EditarEmpresa extends Component
         $this->cnpj = $this->formatCnpj($this->empresa->cnpj);
         $this->plano = $this->empresa->plano;
         $this->email = $this->empresa->email;
+        $this->cep = $this->empresa->cep;
+        $this->cidade = $this->empresa->cidade;
+        $this->bairro = $this->empresa->bairro;
+        $this->numero = $this->empresa->numero;
+        $this->complemento = $this->empresa->complemento;
+        $this->estado = $this->empresa->estado;
+        $this->endereco = $this->empresa->endereco;
     }
 
     public function atualizar()
@@ -44,6 +59,13 @@ class EditarEmpresa extends Component
             'cnpj' => preg_replace('/[^0-9]/', '', $this->cnpj),
             'plano' => $this->plano,
             'email' => $this->email,
+            'cep' => $this->cep,
+            'cidade' => $this->cidade,
+            'bairro' => $this->bairro,
+            'numero' => $this->numero,
+            'complemento' => $this->complemento,
+            'estado' => $this->estado,
+            'endereco' => $this->endereco,
         ]);
 
         //session()->flash('message', 'Empresa atualizada com sucesso!');
@@ -69,6 +91,16 @@ class EditarEmpresa extends Component
             $this->nome = $dados['alias'] ?? $dados['company']['name'] ?? '';
             $this->razao_social = $dados['company']['name'] ?? '';
             $this->email = $dados['email'] ?? '';
+            $this->cep = $dados['address']['zip'] ?? '';
+            $this->endereco = $dados['address']['street'] ?? '';
+            $this->numero = $dados['address']['number'] ?? '';
+            $this->bairro = $dados['address']['district'] ?? '';
+            $this->complemento = $dados['address']['details'] ?? '';
+            $this->estado = $dados['address']['state'] ?? '';
+            $this->cidade = $dados['address']['city'] ?? '';
+            $this->email = $dados['emails']['0']['address'] ?? '';
+
+
             
             $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
         } else {

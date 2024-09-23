@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Empresa extends Model
 {
-    protected $fillable = ['nome', 'data_inicio_plano', 'plano', 'razao_social', 'cnpj','email'];
+    protected $fillable = ['nome', 'data_inicio_plano', 'plano', 'razao_social', 'cnpj','email','cep','endereco','bairro','estado',
+    'numero','complemento','cidade'];
 
     public function users()
     {
