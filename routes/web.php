@@ -1,5 +1,8 @@
 <?php
 
+use App\Livewire\Cliente\CreateCliente;
+use App\Livewire\Cliente\EditCliente;
+use App\Livewire\Cliente\IndexClientes;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Empresa\CadastroEmpresa;
@@ -32,8 +35,17 @@ Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class
 Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
 
+Route::middleware(['auth'])->prefix('painel')->name('painel.')->group(function () {
+    // Rotas relacionadas à empresa
+    Route::get('/empresa/editar', EditarEmpresa::class)->name('empresa.editar');
 
-Route::get('/painel/empresa/editar', EditarEmpresa::class)->name('empresa.editar')->middleware('auth');
+    // Rotas relacionadas aos clientes
+    Route::get('/clientes', IndexClientes::class)->name('clientes.index');
+    Route::get('/clientes/novo', CreateCliente::class)->name('clientes.create');
+    Route::get('/clientes/editar/{id}', EditCliente::class)->name('clientes.edit');
+
+    // Você pode adicionar outras rotas aqui
+});
 
 
 

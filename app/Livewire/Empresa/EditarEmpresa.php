@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Empresa;
 
+use App\Services\CnpjService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 
@@ -21,6 +23,7 @@ class EditarEmpresa extends Component
     public $complemento;
     public $estado;
     public $cidade;
+    public $dadosCnpj;
 
     public $buscandoDados = false;
 
@@ -34,6 +37,17 @@ class EditarEmpresa extends Component
 
     public function mount()
     {
+
+        $user = Auth::user();
+
+        if ($user->empresa) {
+            $this->empresa = $user->empresa;
+            $this->authorize('update', $this->empresa);
+        } else {
+            session()->flash('error', 'Nenhuma empresa associada ao usuário.');
+            return redirect()->route('dashboard');
+        }
+
         $this->empresa = auth()->user()->empresa;
         $this->nome = $this->empresa->nome;
         $this->razao_social = $this->empresa->razao_social;
@@ -51,6 +65,9 @@ class EditarEmpresa extends Component
 
     public function atualizar()
     {
+
+        $this->authorize('update', $this->empresa);
+
         $this->validate();
 
         $this->empresa->update([
@@ -73,39 +90,27 @@ class EditarEmpresa extends Component
         $this->dispatch('showToast', 'Empresa atualizada com sucesso!');
     }
 
-    public function buscarDadosCNPJ()
+    public function buscarDadosCNPJ(CnpjService $cnpjService)
     {
-       // $this->validate(['cnpj' => 'required|digits:14']);
 
-        //$apiKey = config('0b76b57b-ef0f-4cf9-8e54-27d3ffc7249e-c8832ada-74ca-4360-8e0f-959d23d2631e');
+        $this->dadosCnpj = $cnpjService->buscarDadosCnpj($this->cnpj);
 
-        $this->buscandoDados = true;
-        $cnpjSemFormatacao = preg_replace('/[^0-9]/', '', $this->cnpj);
-        $response = Http::withHeaders([
-            'Authorization' => '0b76b57b-ef0f-4cf9-8e54-27d3ffc7249e-c8832ada-74ca-4360-8e0f-959d23d2631e',
-        ])->get("https://api.cnpja.com/office/{$cnpjSemFormatacao}");
+       // dd($this->dadosCnpj);
 
-        if ($response->successful()) {
-            $dados = $response->json();
-
-            $this->nome = $dados['alias'] ?? $dados['company']['name'] ?? '';
-            $this->razao_social = $dados['company']['name'] ?? '';
-            $this->email = $dados['email'] ?? '';
-            $this->cep = $dados['address']['zip'] ?? '';
-            $this->endereco = $dados['address']['street'] ?? '';
-            $this->numero = $dados['address']['number'] ?? '';
-            $this->bairro = $dados['address']['district'] ?? '';
-            $this->complemento = $dados['address']['details'] ?? '';
-            $this->estado = $dados['address']['state'] ?? '';
-            $this->cidade = $dados['address']['city'] ?? '';
-            $this->email = $dados['emails']['0']['address'] ?? '';
-
-
-            
-            $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
-        } else {
-            $this->dispatch('showToast', 'Erro ao buscar dados da empresa. Verifique o CNPJ e tente novamente.', 'error');
-        }
+            $this->nome =  $this->dadosCnpj['alias'] ?? $this->dadosCnpj['company']['name'] ?? '';
+            $this->razao_social = $this->dadosCnpj['company']['name'] ?? '';
+            $this->email =  $this->dadosCnpj['email'] ?? '';
+            $this->cep =  $this->dadosCnpj['address']['zip'] ?? '';
+            $this->endereco =  $this->dadosCnpj['address']['street'] ?? '';
+            $this->numero =  $this->dadosCnpj['address']['number'] ?? '';
+            $this->bairro =  $this->dadosCnpj['address']['district'] ?? '';
+            $this->complemento =  $this->dadosCnpj['address']['details'] ?? '';
+            $this->estado =  $this->dadosCnpj['address']['state'] ?? '';
+            $this->cidade =  $this->dadosCnpj['address']['city'] ?? '';
+            $this->email =  $this->dadosCnpj['emails']['0']['address'] ?? '';
+  
+        $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
+        
 
         $this->buscandoDados = false;
 
