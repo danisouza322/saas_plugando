@@ -17,6 +17,7 @@ class Endereco extends Model
         'numero',
         'municipio_ibge',
         'estado',
+        'cep'
     ];
 
     public function cliente()

@@ -5,6 +5,7 @@ namespace App\Livewire\Cliente;
 use Livewire\Component;
 use App\Models\Cliente;
 use App\Services\CnpjService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class CreateCliente extends Component
@@ -13,6 +14,8 @@ class CreateCliente extends Component
     public $cnpj;
     public $nome_fantasia;
     public $regime_tributario;
+    public $simples;
+    public $mei;
     public $data_abertura;
     public $porte;
     public $capital_social;
@@ -33,6 +36,7 @@ class CreateCliente extends Component
     public $dadosCnpj;
 
     public $buscandoDados = false;
+   
 
 
     protected $rules = [
@@ -95,7 +99,7 @@ class CreateCliente extends Component
 
         $this->dadosCnpj = $cnpjService->buscarDadosCnpj($this->cnpj);
 
-        //dd($this->dadosCnpj);
+       ($this->dadosCnpj);
 
         if (isset($this->dadosCnpj['error'])) {
             session()->flash('error', $this->dadosCnpj['error']);
@@ -105,6 +109,8 @@ class CreateCliente extends Component
             // $this->razao_social = $this->dadosCnpj['company']['name'] ?? '';
              $this->porte = $this->dadosCnpj['company']['size']['text'] ?? '';
              $this->natureza_juridica = $this->dadosCnpj['company']['nature']['text'] ?? '';
+             $this->simples =  $this->dadosCnpj['company']['simples']['optant'] ? "Optante desde - ". Carbon::createFromFormat('Y-m-d', $this->dadosCnpj['company']['simples']['since'])->format('d/m/Y')  : "Não Optante";
+             $this->mei =  $this->dadosCnpj['company']['simei']['optant'] ? "Optante desde - ". Carbon::createFromFormat('Y-m-d', $this->dadosCnpj['company']['simei']['since'])->format('d/m/Y')  : "Não Optante";
              $this->cep =  $this->dadosCnpj['address']['zip'] ?? '';
              $this->rua =  $this->dadosCnpj['address']['street'] ?? '';
              $this->numero =  $this->dadosCnpj['address']['number'] ?? '';
@@ -112,7 +118,7 @@ class CreateCliente extends Component
              $this->complemento =  $this->dadosCnpj['address']['details'] ?? '';
              $this->estado =  $this->dadosCnpj['address']['state'] ?? '';
              $this->cidade =  $this->dadosCnpj['address']['city'] ?? '';
-           //  $this->email =  $this->dadosCnpj['emails']['0']['address'] ?? '';
+            //  $this->email =  $this->dadosCnpj['emails']['0']['address'] ?? '';
    
          $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
         }

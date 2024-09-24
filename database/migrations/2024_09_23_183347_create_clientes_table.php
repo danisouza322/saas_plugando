@@ -20,6 +20,8 @@ return new class extends Migration
         $table->string('razao_social')->nullable();
         $table->string('nome_fantasia')->nullable();
         $table->boolean('regime_tributario')->nullable();
+        $table->boolean('simples')->nullable();
+        $table->boolean('mei')->nullable();
         $table->date('data_abertura')->nullable();
         $table->string('porte', 50)->nullable();
         $table->double('capital_social')->nullable();

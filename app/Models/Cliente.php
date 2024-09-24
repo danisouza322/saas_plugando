@@ -21,6 +21,8 @@ class Cliente extends Model
         'natureza_juridica',
         'tipo',
         'situacao_cadastral',
+        'simples',
+        'mei'
     ];
 
     public function empresa()

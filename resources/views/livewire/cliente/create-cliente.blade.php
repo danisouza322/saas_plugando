@@ -39,17 +39,43 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="nome_fantasia" class="form-label">Porte:</label>
                             <input type="text" class="form-control border-dashed @error('porte') is-invalid @enderror" id="porte" wire:model="porte">
                             @error('porte')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="natureza_juridica" class="form-label">Natureza Jurídica:</label>
                             <input type="text" class="form-control border-dashed @error('natureza_juridica') is-invalid @enderror" id="natureza_juridica" wire:model="natureza_juridica">
                             @error('natureza_juridica')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-2">
+                            <label for="simples" class="form-label">Simples Nacional:</label>
+                            <input type="text" class="form-control-plaintext @error('simples') is-invalid @enderror" id="simples" wire:model="simples">
+                            @error('simples')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-2">
+                            <label for="mei" class="form-label">Mei:</label>
+                            <input type="text" class="form-control-plaintext @error('mei') is-invalid @enderror" id="mei" wire:model="mei">
+                            @error('mei')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-2">  
+                        <label for="mei" class="form-label">Regime Tributário:</label>
+                            <select class="form-select border-dashed @error('regime_tributario') is-invalid @enderror" id="regime_tributario" wire:model="regime_tributario"" aria-label="Default select example">
+                                <option selected value="">Selecione o Regime Tributário</option>
+                                <option value="simples_nacional">Simples Nacional</option>
+                                <option value="mei">Mei</option>
+                                <option value="lucro_presumido">Lucro Presumido</option>
+                            </select>
+                            @error('regime_tributario')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -65,8 +91,8 @@
                         </div>
                         <div class="col-md-4">
                             <label for="endereco" class="form-label">Logradouro:</label>
-                            <input type="text" class="form-control border-dashed @error('endereco') is-invalid @enderror" id="endereco" wire:model="endereco">
-                            @error('endereco')
+                            <input type="text" class="form-control border-dashed @error('rua') is-invalid @enderror" id="rua" wire:model="rua">
+                            @error('rua')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
