@@ -88,3 +88,11 @@ if (document.querySelector("#cnpj")) {
         numericOnly: true
     });
 }
+
+if (document.querySelector("#cpf_cnpj")) {
+    var cleaveBlocks = new Cleave('#cpf_cnpj', {
+        delimiters: ['.', '.', '/', '-'],
+        blocks: [2, 3, 3, 4, 2],
+        numericOnly: true
+    });
+}

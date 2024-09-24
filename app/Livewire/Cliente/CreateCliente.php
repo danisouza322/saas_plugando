@@ -4,13 +4,13 @@ namespace App\Livewire\Cliente;
 
 use Livewire\Component;
 use App\Models\Cliente;
+use App\Services\CnpjService;
 use Illuminate\Support\Facades\Auth;
 
 class CreateCliente extends Component
 {
     public $razao_social;
-    public $cpf_cnpj;
-
+    public $cnpj;
     public $nome_fantasia;
     public $regime_tributario;
     public $data_abertura;
@@ -21,16 +21,23 @@ class CreateCliente extends Component
     public $situacao_cadastral;
 
     // Campos de endereço
+    public $cep;
     public $rua;
+    public $complemento;
     public $numero;
     public $bairro;
     public $cidade;
     public $estado;
     public $municipio_ibge;
 
+    public $dadosCnpj;
+
+    public $buscandoDados = false;
+
+
     protected $rules = [
         'razao_social' => 'required|string|max:255',
-        'cpf_cnpj' => 'required|string|max:18|unique:clientes,cpf_cnpj',
+        'cnpj' => 'required|string|max:18|unique:clientes,cnpj',
         'nome_fantasia' => 'required|string|max:255',
         'regime_tributario' => 'nullable|integer',
         'data_abertura' => 'nullable|date',
@@ -56,7 +63,7 @@ class CreateCliente extends Component
         $cliente = Cliente::create([
             'empresa_id' => Auth::user()->empresa_id,
             'razao_social' => $this->razao_social,
-            'cpf_cnpj' => $this->cpf_cnpj,
+            'cnpj' => $this->cnpj,
             'nome_fantasia' => $this->nome_fantasia,
             'regime_tributario' => $this->regime_tributario,
             'data_abertura' => $this->data_abertura,
@@ -69,6 +76,7 @@ class CreateCliente extends Component
 
         // Salvar endereço
         $cliente->endereco()->create([
+            'cep' => $this->cep,
             'rua' => $this->rua,
             'numero' => $this->numero,
             'bairro' => $this->bairro,
@@ -80,6 +88,38 @@ class CreateCliente extends Component
         session()->flash('message', 'Cliente cadastrado com sucesso!');
 
         return redirect()->route('painel.clientes.index');
+    }
+
+    public function buscarDadosCNPJ(CnpjService $cnpjService)
+    {
+
+        $this->dadosCnpj = $cnpjService->buscarDadosCnpj($this->cnpj);
+
+        //dd($this->dadosCnpj);
+
+        if (isset($this->dadosCnpj['error'])) {
+            session()->flash('error', $this->dadosCnpj['error']);
+        } else {
+
+             $this->razao_social = $this->dadosCnpj['company']['name'] ?? '';
+            // $this->razao_social = $this->dadosCnpj['company']['name'] ?? '';
+             $this->porte = $this->dadosCnpj['company']['size']['text'] ?? '';
+             $this->natureza_juridica = $this->dadosCnpj['company']['nature']['text'] ?? '';
+             $this->cep =  $this->dadosCnpj['address']['zip'] ?? '';
+             $this->rua =  $this->dadosCnpj['address']['street'] ?? '';
+             $this->numero =  $this->dadosCnpj['address']['number'] ?? '';
+             $this->bairro =  $this->dadosCnpj['address']['district'] ?? '';
+             $this->complemento =  $this->dadosCnpj['address']['details'] ?? '';
+             $this->estado =  $this->dadosCnpj['address']['state'] ?? '';
+             $this->cidade =  $this->dadosCnpj['address']['city'] ?? '';
+           //  $this->email =  $this->dadosCnpj['emails']['0']['address'] ?? '';
+   
+         $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
+        }
+        
+
+        $this->buscandoDados = false;
+
     }
 
     public function render()

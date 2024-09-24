@@ -14,6 +14,9 @@ return new class extends Migration
     Schema::create('clientes', function (Blueprint $table) {
         $table->id();
         $table->unsignedBigInteger('empresa_id');
+        $table->string('cnpj')->unique();
+        $table->string('cpf')->unique();
+        $table->string('tipo_cliente')->nullable();
         $table->string('razao_social')->nullable();
         $table->string('nome_fantasia')->nullable();
         $table->boolean('regime_tributario')->nullable();

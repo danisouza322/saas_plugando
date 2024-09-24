@@ -95,21 +95,25 @@ class EditarEmpresa extends Component
 
         $this->dadosCnpj = $cnpjService->buscarDadosCnpj($this->cnpj);
 
-       // dd($this->dadosCnpj);
+        if (isset($this->dadosCnpj['error'])) {
+            session()->flash('error', $this->dadosCnpj['error']);
+        } else {
+             // dd($this->dadosCnpj);
 
-            $this->nome =  $this->dadosCnpj['alias'] ?? $this->dadosCnpj['company']['name'] ?? '';
-            $this->razao_social = $this->dadosCnpj['company']['name'] ?? '';
-            $this->email =  $this->dadosCnpj['email'] ?? '';
-            $this->cep =  $this->dadosCnpj['address']['zip'] ?? '';
-            $this->endereco =  $this->dadosCnpj['address']['street'] ?? '';
-            $this->numero =  $this->dadosCnpj['address']['number'] ?? '';
-            $this->bairro =  $this->dadosCnpj['address']['district'] ?? '';
-            $this->complemento =  $this->dadosCnpj['address']['details'] ?? '';
-            $this->estado =  $this->dadosCnpj['address']['state'] ?? '';
-            $this->cidade =  $this->dadosCnpj['address']['city'] ?? '';
-            $this->email =  $this->dadosCnpj['emails']['0']['address'] ?? '';
-  
-        $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
+             $this->nome =  $this->dadosCnpj['alias'] ?? $this->dadosCnpj['company']['name'] ?? '';
+             $this->razao_social = $this->dadosCnpj['company']['name'] ?? '';
+             $this->email =  $this->dadosCnpj['email'] ?? '';
+             $this->cep =  $this->dadosCnpj['address']['zip'] ?? '';
+             $this->endereco =  $this->dadosCnpj['address']['street'] ?? '';
+             $this->numero =  $this->dadosCnpj['address']['number'] ?? '';
+             $this->bairro =  $this->dadosCnpj['address']['district'] ?? '';
+             $this->complemento =  $this->dadosCnpj['address']['details'] ?? '';
+             $this->estado =  $this->dadosCnpj['address']['state'] ?? '';
+             $this->cidade =  $this->dadosCnpj['address']['city'] ?? '';
+             $this->email =  $this->dadosCnpj['emails']['0']['address'] ?? '';
+   
+         $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
+        }
         
 
         $this->buscandoDados = false;

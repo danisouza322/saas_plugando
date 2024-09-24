@@ -14,6 +14,8 @@ return new class extends Migration
     Schema::create('enderecos', function (Blueprint $table) {
         $table->id();
         $table->unsignedBigInteger('cliente_id');
+        $table->string('complemento')->nullable();
+        $table->string('cep')->nullable();
         $table->string('rua')->nullable();
         $table->string('bairro')->nullable();
         $table->string('cidade')->nullable();

@@ -21,7 +21,7 @@ class CnpjService
             
             $response = Http::withHeaders([
                 'Authorization' => '0b76b57b-ef0f-4cf9-8e54-27d3ffc7249e-c8832ada-74ca-4360-8e0f-959d23d2631e',
-            ])->get("https://api.cnpja.com/office/{$cnpjLimpo}");
+            ])->get("https://api.cnpja.com/office/{$cnpjLimpo}?simples=true&registrations=BR");
 
             if ($response->successful()) {
                 return $response->json();
