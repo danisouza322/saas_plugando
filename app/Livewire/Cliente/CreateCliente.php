@@ -36,6 +36,8 @@ class CreateCliente extends Component
     public $dadosCnpj;
     public $atividades = [];
 
+    public $inscricoesEstaduais = [];
+
 
     public $buscandoDados = false;
    
@@ -99,6 +101,18 @@ class CreateCliente extends Component
                 'codigo' => $atividade['codigo'],
                 'descricao' => $atividade['descricao'],
             ]);
+    }
+
+    // Salvar as inscrições estaduais
+    foreach ($this->inscricoesEstaduais as $inscricao) {
+        $cliente->inscricoesEstaduais()->create([
+            'estado' => $inscricao['estado'],
+            'numero' => $inscricao['numero'],
+            'ativa' => $inscricao['ativa'],
+            'data_status' => $inscricao['data_status'],
+            'status_texto' => $inscricao['status_texto'],
+            'tipo_texto' => $inscricao['tipo_texto'],
+        ]);
     }
 
         session()->flash('message', 'Cliente cadastrado com sucesso!');
@@ -167,6 +181,22 @@ class CreateCliente extends Component
                 ];
             }
         }    
+
+         // **Processar inscrições estaduais**
+         $this->inscricoesEstaduais = [];
+
+         if (isset($this->dadosCnpj['registrations']) && is_array($this->dadosCnpj['registrations'])) {
+             foreach ($this->dadosCnpj['registrations'] as $registration) {
+                 $this->inscricoesEstaduais[] = [
+                     'estado' => $registration['state'] ?? '',
+                     'numero' => $registration['number'] ?? '',
+                     'ativa' => $registration['enabled'] ?? false,
+                     'data_status' => $registration['statusDate'] ?? '',
+                     'status_texto' => $registration['status']['text'] ?? '',
+                     'tipo_texto' => $registration['type']['text'] ?? '',
+                 ];
+             }
+         }
 
          $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
         }

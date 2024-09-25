@@ -10,6 +10,8 @@
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ URL::asset('build/images/favicon.ico')}}">
     @include('layouts.head-css')
+    <!-- Sweet Alert css-->
+    <link href="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
     @livewireStyles
 </head>
 
@@ -36,12 +38,12 @@
         <!-- end main content-->
     </div>
     <!-- END layout-wrapper -->
-
+    @livewireScripts
     @include('layouts.customizer')
 
     <!-- JAVASCRIPT -->
     @include('layouts.vendor-scripts')
-    @livewireScripts
+   
 </body>
 
 </html>

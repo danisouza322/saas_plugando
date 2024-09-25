@@ -7,14 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class InscricaoEstadual extends Model
 {
+
+    protected $table = 'inscricoes_estaduais';
+    
     use HasFactory;
 
     protected $fillable = [
         'cliente_id',
-        'tipo',
-        'uf',
+        'estado',
         'numero',
-        'situacao',
+        'ativa',
+        'data_status',
+        'status_id',
+        'status_texto',
+        'tipo_id',
+        'tipo_texto',
     ];
 
     public function cliente()

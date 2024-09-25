@@ -7,6 +7,10 @@
 @endsection
 @section('script')
 <script src="{{ URL::asset('build/js/app.js') }}"></script>
+<!-- listjs init -->
+<script src="{{ URL::asset('build/js/clientes.js') }}"></script>
+<!-- Sweet Alerts js -->
+<script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('showToast', (message) => {

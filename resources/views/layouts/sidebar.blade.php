@@ -44,6 +44,12 @@
                         </ul>
                     </div>
                 </li> <!-- end Dashboard Menu -->
+
+                <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{route('painel.clientes.index')}}" aria-expanded="false">
+                                <i class="ri-user-3-line"></i> <span data-key="t-widgets">Clientes</span>
+                            </a>
+                </li>
               
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarLayouts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLayouts">

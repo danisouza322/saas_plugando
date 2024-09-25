@@ -145,6 +145,51 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="col-md-12">
+                            <div class="fs-15 mt-3">Inscrições Estaduais</div>
+                        </div>
+                        @foreach($inscricoesEstaduais as $index => $inscricao)
+                            <div class="col-md-2 mb-3">
+                                <label for="inscricoesEstaduais_{{ $index }}_estado" class="form-label">Estado:</label>
+                                <input type="text" id="inscricoesEstaduais_{{ $index }}_estado"
+                                    class="form-control border-dashed @error('inscricoesEstaduais.'.$index.'.estado') is-invalid @enderror"
+                                    wire:model="inscricoesEstaduais.{{ $index }}.estado">
+                                @error('inscricoesEstaduais.'.$index.'.estado')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="inscricoesEstaduais_{{ $index }}_numero" class="form-label">Número:</label>
+                                <input type="text" id="inscricoesEstaduais_{{ $index }}_numero"
+                                    class="form-control border-dashed @error('inscricoesEstaduais.'.$index.'.numero') is-invalid @enderror"
+                                    wire:model="inscricoesEstaduais.{{ $index }}.numero">
+                                @error('inscricoesEstaduais.'.$index.'.numero')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="inscricoesEstaduais_{{ $index }}_ativa" class="form-label">Ativa:</label>
+                                <select id="inscricoesEstaduais_{{ $index }}_ativa"
+                                        class="form-control border-dashed @error('inscricoesEstaduais.'.$index.'.ativa') is-invalid @enderror"
+                                        wire:model="inscricoesEstaduais.{{ $index }}.ativa">
+                                    <option value="1" {{ $inscricao['ativa'] ? 'selected' : '' }}>Sim</option>
+                                    <option value="0" {{ !$inscricao['ativa'] ? 'selected' : '' }}>Não</option>
+                                </select>
+                                @error('inscricoesEstaduais.'.$index.'.ativa')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="inscricoesEstaduais_{{ $index }}_status_texto" class="form-label">Status:</label>
+                                <input type="text" id="inscricoesEstaduais_{{ $index }}_status_texto"
+                                    class="form-control border-dashed @error('inscricoesEstaduais.'.$index.'.status_texto') is-invalid @enderror"
+                                    wire:model="inscricoesEstaduais.{{ $index }}.status_texto">
+                                @error('inscricoesEstaduais.'.$index.'.status_texto')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endforeach
                         <div class="col-md-12">
                             <div class="fs-15 mt-3">Atividades Econômicas</div>    
                         </div>
@@ -168,6 +213,7 @@
                                 @enderror
                             </div>
                         @endforeach
+
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit">Cadastrar</button>
                         </div>

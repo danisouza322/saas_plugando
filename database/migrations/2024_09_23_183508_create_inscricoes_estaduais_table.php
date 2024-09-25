@@ -14,12 +14,17 @@ return new class extends Migration
     Schema::create('inscricoes_estaduais', function (Blueprint $table) {
         $table->id();
         $table->unsignedBigInteger('cliente_id');
-        $table->string('tipo', 50)->nullable();
-        $table->string('uf', 2)->nullable();
-        $table->string('numero')->nullable();
-        $table->string('situacao', 50)->nullable();
+        $table->string('estado', 2);
+        $table->string('numero');
+        $table->boolean('ativa')->default(true);
+        $table->date('data_status')->nullable();
+        $table->unsignedBigInteger('status_id')->nullable();
+        $table->string('status_texto')->nullable();
+        $table->unsignedBigInteger('tipo_id')->nullable();
+        $table->string('tipo_texto')->nullable();
         $table->timestamps();
 
+        // Chave estrangeira para o cliente
         $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
     });
 }
