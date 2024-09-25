@@ -34,6 +34,8 @@ class CreateCliente extends Component
     public $municipio_ibge;
 
     public $dadosCnpj;
+    public $atividades = [];
+
 
     public $buscandoDados = false;
    
@@ -42,8 +44,7 @@ class CreateCliente extends Component
     protected $rules = [
         'razao_social' => 'required|string|max:255',
         'cnpj' => 'required|string|max:18|unique:clientes,cnpj',
-        'nome_fantasia' => 'required|string|max:255',
-        'regime_tributario' => 'nullable|integer',
+        'regime_tributario' => 'nullable',
         'data_abertura' => 'nullable|date',
         'porte' => 'nullable|string|max:50',
         'capital_social' => 'nullable|numeric',
@@ -76,6 +77,8 @@ class CreateCliente extends Component
             'natureza_juridica' => $this->natureza_juridica,
             'tipo' => $this->tipo,
             'situacao_cadastral' => $this->situacao_cadastral,
+            'mei' => $this->mei,
+            'simples' => $this->simples,
         ]);
 
         // Salvar endereço
@@ -88,6 +91,15 @@ class CreateCliente extends Component
             'estado' => $this->estado,
             'municipio_ibge' => $this->municipio_ibge,
         ]);
+
+           // Salvar atividades
+        foreach ($this->atividades as $atividade) {
+            $cliente->atividadesEconomicas()->create([
+                'tipo' => $atividade['tipo'],
+                'codigo' => $atividade['codigo'],
+                'descricao' => $atividade['descricao'],
+            ]);
+    }
 
         session()->flash('message', 'Cliente cadastrado com sucesso!');
 
@@ -119,7 +131,43 @@ class CreateCliente extends Component
              $this->estado =  $this->dadosCnpj['address']['state'] ?? '';
              $this->cidade =  $this->dadosCnpj['address']['city'] ?? '';
             //  $this->email =  $this->dadosCnpj['emails']['0']['address'] ?? '';
-   
+
+
+            // Atualizar o valor de $regime_tributario com base na resposta da API
+            $simples = $this->dadosCnpj['company']['simples']['optant'];
+            $mei = $this->dadosCnpj['company']['simei']['optant']; 
+
+            if ($simples && !$mei) {
+                $this->regime_tributario = 'simples_nacional';
+            } elseif ($simples && $mei) {
+                $this->regime_tributario = 'mei';
+            } else {
+                $this->regime_tributario = 'lucro_presumido';
+            }
+
+            // Atividades
+            $this->atividades = [];
+
+            // Atividade principal
+            if (isset($this->dadosCnpj['mainActivity'])) {
+                $this->atividades[] = [
+                    'tipo' => 'Principal',
+                    'codigo' => $this->dadosCnpj['mainActivity']['id'],
+                    'descricao' => $this->dadosCnpj['mainActivity']['text'],
+                ];
+            }
+
+             // Atividades secundárias
+        if (isset($this->dadosCnpj['sideActivities']) && is_array($this->dadosCnpj['sideActivities'])) {
+            foreach ($this->dadosCnpj['sideActivities'] as $atividadeSecundaria) {
+                $this->atividades[] = [
+                    'tipo' => 'Secundária',
+                    'codigo' => $atividadeSecundaria['id'],
+                    'descricao' => $atividadeSecundaria['text'],
+                ];
+            }
+        }    
+
          $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
         }
         

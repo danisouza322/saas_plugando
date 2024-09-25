@@ -24,7 +24,7 @@
                     <td><?php echo e($cliente->nome_fantasia); ?></td>
                     <!-- Outros dados -->
                     <td>
-                        <a href="<?php echo e(route('clientes.edit', $cliente->id)); ?>" class="btn btn-sm btn-primary">Editar</a>
+                        <a href="<?php echo e(route('painel.clientes.edit', $cliente->id)); ?>" class="btn btn-sm btn-primary">Editar</a>
                         <!-- Botão de exclusão -->
                     </td>
                 </tr>

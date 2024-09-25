@@ -14,14 +14,14 @@ return new class extends Migration
     Schema::create('clientes', function (Blueprint $table) {
         $table->id();
         $table->unsignedBigInteger('empresa_id');
-        $table->string('cnpj')->unique();
-        $table->string('cpf')->unique();
+        $table->string('cnpj')->unique()->nullable();
+        $table->string('cpf')->unique()->nullable();
         $table->string('tipo_cliente')->nullable();
         $table->string('razao_social')->nullable();
         $table->string('nome_fantasia')->nullable();
-        $table->boolean('regime_tributario')->nullable();
-        $table->boolean('simples')->nullable();
-        $table->boolean('mei')->nullable();
+        $table->string('regime_tributario')->nullable();
+        $table->string('simples')->nullable();
+        $table->string('mei')->nullable();
         $table->date('data_abertura')->nullable();
         $table->string('porte', 50)->nullable();
         $table->double('capital_social')->nullable();

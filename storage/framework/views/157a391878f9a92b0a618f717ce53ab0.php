@@ -81,7 +81,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="nome_fantasia" class="form-label">Porte:</label>
                             <input type="text" class="form-control border-dashed <?php $__errorArgs = ['porte'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -102,7 +102,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="natureza_juridica" class="form-label">Natureza Jurídica:</label>
                             <input type="text" class="form-control border-dashed <?php $__errorArgs = ['natureza_juridica'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -113,6 +113,74 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" id="natureza_juridica" wire:model="natureza_juridica">
                             <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['natureza_juridica'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                        <div class="col-md-2">
+                            <label for="simples" class="form-label">Simples Nacional:</label>
+                            <input type="text" class="form-control-plaintext <?php $__errorArgs = ['simples'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="simples" wire:model="simples">
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['simples'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                        <div class="col-md-2">
+                            <label for="mei" class="form-label">Mei:</label>
+                            <input type="text" class="form-control-plaintext <?php $__errorArgs = ['mei'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="mei" wire:model="mei">
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['mei'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                        <div class="col-md-2">  
+                        <label for="mei" class="form-label">Regime Tributário:</label>
+                            <select class="form-select border-dashed <?php $__errorArgs = ['regime_tributario'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="regime_tributario" wire:model="regime_tributario"" aria-label="Default select example">
+                                <option selected value="">Selecione o Regime Tributário</option>
+                                <option value="simples_nacional">Simples Nacional</option>
+                                <option value="mei">Mei</option>
+                                <option value="lucro_presumido">Lucro Presumido</option>
+                            </select>
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['regime_tributario'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -149,15 +217,15 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div class="col-md-4">
                             <label for="endereco" class="form-label">Logradouro:</label>
-                            <input type="text" class="form-control border-dashed <?php $__errorArgs = ['endereco'];
+                            <input type="text" class="form-control border-dashed <?php $__errorArgs = ['rua'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" id="endereco" wire:model="endereco">
-                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['endereco'];
+unset($__errorArgs, $__bag); ?>" id="rua" wire:model="rua">
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['rua'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -315,6 +383,57 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
+                        <div class="col-md-12">
+                            <div class="fs-15 mt-3">Atividades Econômicas</div>    
+                        </div>
+                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $atividades; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $atividade): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="col-md-3 mb-3">
+                                <label for="atividades_<?php echo e($index); ?>_codigo" class="form-label">Código (<?php echo e($atividade['tipo']); ?>):</label>
+                                <input type="text" id="atividades_<?php echo e($index); ?>_codigo"
+                                    class="form-control border-dashed <?php $__errorArgs = ['atividades.'.$index.'.codigo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                    wire:model="atividades.<?php echo e($index); ?>.codigo">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['atividades.'.$index.'.codigo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                            <div class="col-md-9 mb-3">
+                                <label for="atividades_<?php echo e($index); ?>_descricao" class="form-label">Descrição (<?php echo e($atividade['tipo']); ?>):</label>
+                                <input type="text" id="atividades_<?php echo e($index); ?>_descricao"
+                                    class="form-control border-dashed <?php $__errorArgs = ['atividades.'.$index.'.descricao'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                    wire:model="atividades.<?php echo e($index); ?>.descricao">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['atividades.'.$index.'.descricao'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit">Cadastrar</button>
                         </div>

@@ -23,7 +23,7 @@
                     <td>{{ $cliente->nome_fantasia }}</td>
                     <!-- Outros dados -->
                     <td>
-                        <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-sm btn-primary">Editar</a>
+                        <a href="{{ route('painel.clientes.edit', $cliente->id) }}" class="btn btn-sm btn-primary">Editar</a>
                         <!-- Botão de exclusão -->
                     </td>
                 </tr>

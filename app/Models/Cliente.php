@@ -11,7 +11,8 @@ class Cliente extends Model
 
     protected $fillable = [
         'empresa_id',
-        'cpf_cnpj',
+        'cnpj',
+        'cpf',
         'razao_social',
         'nome_fantasia',
         'regime_tributario',

@@ -145,6 +145,29 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="col-md-12">
+                            <div class="fs-15 mt-3">Atividades Econômicas</div>    
+                        </div>
+                        @foreach($atividades as $index => $atividade)
+                            <div class="col-md-3 mb-3">
+                                <label for="atividades_{{ $index }}_codigo" class="form-label">Código ({{ $atividade['tipo'] }}):</label>
+                                <input type="text" id="atividades_{{ $index }}_codigo"
+                                    class="form-control border-dashed @error('atividades.'.$index.'.codigo') is-invalid @enderror"
+                                    wire:model="atividades.{{ $index }}.codigo">
+                                @error('atividades.'.$index.'.codigo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-9 mb-3">
+                                <label for="atividades_{{ $index }}_descricao" class="form-label">Descrição ({{ $atividade['tipo'] }}):</label>
+                                <input type="text" id="atividades_{{ $index }}_descricao"
+                                    class="form-control border-dashed @error('atividades.'.$index.'.descricao') is-invalid @enderror"
+                                    wire:model="atividades.{{ $index }}.descricao">
+                                @error('atividades.'.$index.'.descricao')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endforeach
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit">Cadastrar</button>
                         </div>

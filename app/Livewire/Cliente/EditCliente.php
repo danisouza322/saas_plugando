@@ -23,7 +23,7 @@ class EditCliente extends Component
     public function mount($id)
     {
         $this->cliente = Cliente::findOrFail($id);
-        $this->authorize('update', $this->cliente);
+      //  $this->authorize('update', $this->cliente);
     }
 
     public function submit()
