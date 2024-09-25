@@ -89,7 +89,7 @@
                                                     <td><?php echo e($cliente->inscricao_estadual); ?></td>
                                                     <td><?php echo e($cliente->regime_tributario_label); ?></td>
                                                     <td>
-                                                        <button type="button" class="btn btn-sm btn-primary" wire:click="editCliente(<?php echo e($cliente->id); ?>)">Editar</button>
+                                                    <a href="<?php echo e(route('painel.clientes.edit', ['clienteId' => $cliente->id])); ?>" class="btn btn-primary">Editar</a>
                                                         <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="<?php echo e($cliente->id); ?>">Excluir</button>
                                                     </td>
                                                 </tr>

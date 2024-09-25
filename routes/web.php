@@ -42,7 +42,8 @@ Route::middleware(['auth'])->prefix('painel')->name('painel.')->group(function (
     // Rotas relacionadas aos clientes
     Route::get('/clientes', IndexClientes::class)->name('clientes.index');
     Route::get('/clientes/novo', CreateCliente::class)->name('clientes.create');
-    Route::get('/clientes/editar/{id}', EditCliente::class)->name('clientes.edit');
+    Route::get('/clientes/editar/{clienteId}', EditCliente::class)->name('clientes.edit');
+
 
     // Você pode adicionar outras rotas aqui
 });
