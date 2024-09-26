@@ -232,7 +232,9 @@ class EditCliente extends Component
     public function render()
     {
         return view('livewire.cliente.edit-cliente')
-        ->layout('layouts.app');
+        ->layout('layouts.app', [
+            'titulo' => 'Editar Cliente', // Passando 'titulo' para o layout
+        ]);
     }
 }
 

@@ -12,4 +12,4 @@
         </div>
     </div>
 </footer>
-<?php /**PATH C:\Users\Daniel\Documents\saas_plugando\resources\views/layouts/footer.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\saas_plugando\resources\views/layouts/footer.blade.php ENDPATH**/ ?>

@@ -104,4 +104,4 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
         </nav>
     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 </div>
-<?php /**PATH C:\Users\Daniel\Documents\saas_plugando\vendor\livewire\livewire\src\Features\SupportPagination/views/bootstrap.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\saas_plugando\vendor\livewire\livewire\src\Features\SupportPagination/views/bootstrap.blade.php ENDPATH**/ ?>

@@ -290,4 +290,4 @@
 <!-- Left Sidebar End -->
 <!-- Vertical Overlay-->
 <div class="vertical-overlay"></div>
-<?php /**PATH C:\Users\Daniel\Documents\saas_plugando\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\saas_plugando\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>

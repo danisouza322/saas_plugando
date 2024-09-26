@@ -10,4 +10,4 @@
 <!-- custom Css-->
 <link href="<?php echo e(URL::asset('build/css/custom.min.css')); ?>" id="app-style" rel="stylesheet" type="text/css" />
 
-<?php /**PATH C:\Users\Daniel\Documents\saas_plugando\resources\views/layouts/head-css.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\saas_plugando\resources\views/layouts/head-css.blade.php ENDPATH**/ ?>

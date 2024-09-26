@@ -16,6 +16,8 @@ class IndexClientes extends Component
     public $selectedClientes = [];
     public $selectAll = false;
 
+    public $titulo = 'Meus Clientes';
+
     protected $paginationTheme = 'bootstrap'; // Para usar a paginação com estilo Bootstrap
 
     protected $listeners = ['deleteCliente'];
@@ -85,7 +87,9 @@ class IndexClientes extends Component
 
         return view('livewire.cliente.index-clientes', [
             'clientes' => $clientes,
-        ])->layout('layouts.app');
+        ])->layout('layouts.app', [
+            'titulo' => $this->titulo, // Passando 'titulo' para o layout
+        ]);
     }
 }
 

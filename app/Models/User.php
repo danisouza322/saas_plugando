@@ -50,4 +50,28 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Empresa::class);
     }
+
+     /**
+     * Relação muitos-para-muitos com Task.
+     */
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class)->withTimestamps();
+    }
+
+    /**
+     * Relação com TaskTemplates (se aplicável).
+     */
+    public function taskTemplates()
+    {
+        return $this->hasMany(TaskTemplate::class);
+    }
+
+     /**
+     * Relação com Clientes via Empresa.
+     */
+    public function clientes()
+    {
+        return $this->empresa->clientes();
+    }
 }

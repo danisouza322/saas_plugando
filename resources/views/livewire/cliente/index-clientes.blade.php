@@ -43,11 +43,6 @@
                                         <table class="table table-nowrap table-striped-columns mb-0">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th scope="col" style="width: 50px;">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" wire:model="selectAll">
-                                                        </div>
-                                                    </th>
                                                     <th scope="col">
                                                         <a href="#" wire:click.prevent="sortBy('razao_social')">
                                                             Razão Social
@@ -78,11 +73,6 @@
                                             <tbody>
                                                 @forelse($clientes as $cliente)
                                                 <tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" wire:model="selectedClientes" value="{{ $cliente->id }}">
-                                                        </div>
-                                                    </td>
                                                     <td>{{ $cliente->razao_social }}</td>
                                                     <td>{{ $cliente->cnpj }}</td>
                                                     <td>{{ $cliente->inscricaoEstadualAtiva->numero ?? 'Insento/Inativo' }}</td>

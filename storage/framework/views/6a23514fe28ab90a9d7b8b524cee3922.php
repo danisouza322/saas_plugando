@@ -6,4 +6,4 @@
 <script src="<?php echo e(URL::asset('build/js/plugins.js')); ?>"></script>
 <?php echo $__env->yieldContent('script'); ?>
 <?php echo $__env->yieldContent('script-bottom'); ?>
-<?php /**PATH C:\Users\Daniel\Documents\saas_plugando\resources\views/layouts/vendor-scripts.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\saas_plugando\resources\views/layouts/vendor-scripts.blade.php ENDPATH**/ ?>

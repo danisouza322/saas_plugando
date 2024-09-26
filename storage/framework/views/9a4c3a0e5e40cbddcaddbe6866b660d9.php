@@ -44,11 +44,6 @@
                                         <table class="table table-nowrap table-striped-columns mb-0">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th scope="col" style="width: 50px;">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" wire:model="selectAll">
-                                                        </div>
-                                                    </th>
                                                     <th scope="col">
                                                         <a href="#" wire:click.prevent="sortBy('razao_social')">
                                                             Razão Social
@@ -79,11 +74,6 @@
                                             <tbody>
                                                 <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $clientes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cliente): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                                 <tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" wire:model="selectedClientes" value="<?php echo e($cliente->id); ?>">
-                                                        </div>
-                                                    </td>
                                                     <td><?php echo e($cliente->razao_social); ?></td>
                                                     <td><?php echo e($cliente->cnpj); ?></td>
                                                     <td><?php echo e($cliente->inscricaoEstadualAtiva->numero ?? 'Insento/Inativo'); ?></td>
@@ -113,4 +103,4 @@
                         </div><!-- end col -->
                     </div>
 </div>
-<?php /**PATH C:\Users\Daniel\Documents\saas_plugando\resources\views/livewire/cliente/index-clientes.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\saas_plugando\resources\views/livewire/cliente/index-clientes.blade.php ENDPATH**/ ?>

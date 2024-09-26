@@ -123,7 +123,9 @@ class EditarEmpresa extends Component
     public function render()
     {
         return view('livewire.empresa.editar-empresa')
-                ->layout('layouts.app'); // Usando um layout para páginas de convidado
+            ->layout('layouts.app', [
+                'titulo' => 'Editar Empresa', // Passando 'titulo' para o layout
+            ]);
     }
 
     private function formatCnpj($cnpj)

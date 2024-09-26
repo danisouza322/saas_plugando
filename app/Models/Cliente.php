@@ -48,6 +48,22 @@ class Cliente extends Model
         return $this->hasMany(SocioAdministrador::class);
     }
 
+    /**
+     * Relação com TaskTemplates (se aplicável).
+     */
+    public function taskTemplates()
+    {
+        return $this->hasMany(TaskTemplate::class);
+    }
+
+    /**
+     * Relação com Tasks.
+     */
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
     public function getRegimeTributarioLabelAttribute()
         {
             $labels = [

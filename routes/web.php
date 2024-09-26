@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Empresa\CadastroEmpresa;
 use App\Livewire\Empresa\EditarEmpresa;
+use App\Livewire\User\EditProfile;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,7 @@ Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 Route::middleware(['auth'])->prefix('painel')->name('painel.')->group(function () {
+    Route::get('/perfil', EditProfile::class)->name('perfil.editar');
     // Rotas relacionadas à empresa
     Route::get('/empresa/editar', EditarEmpresa::class)->name('empresa.editar');
 

@@ -2,13 +2,13 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Novo Cliente</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Editando: <?php echo e($razao_social); ?></h4>
                 <div class="flex-shrink-0">
                 </div>
             </div><!-- end card header -->
             <div class="card-body">
                 <div class="live-preview">
-                    <form wire:submit.prevent="submit" class="row g-3">
+                    <form wire:submit.prevent="save" class="row g-3">
                         <div class="col-md-4">
                             <label for="cnpj" class="form-label">CNPJ:</label>
                             <div class="input-group">
@@ -505,7 +505,7 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
 
                         <div class="col-12">
-                            <button class="btn btn-primary" type="submit">Cadastrar</button>
+                            <button class="btn btn-primary" type="submit">Editar Cliente</button>
                         </div>
                     </form>
                 </div>
@@ -516,4 +516,4 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
     
     <script src="<?php echo e(URL::asset('build/libs/cleave.js/cleave.min.js')); ?>"></script>
     <script src="<?php echo e(URL::asset('build/js/pages/form-masks.init.js')); ?>"></script>
-</div><?php /**PATH C:\Users\Daniel\Documents\saas_plugando\resources\views/livewire/cliente/create-cliente.blade.php ENDPATH**/ ?>
+</div><?php /**PATH C:\laragon\www\saas_plugando\resources\views/livewire/cliente/edit-cliente.blade.php ENDPATH**/ ?>
