@@ -5,4 +5,4 @@
 <?php else: ?>
     <i class="mdi mdi-arrow-down"></i>
 <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-<?php /**PATH C:\laragon\www\saas_plugando\resources\views/livewire/partials/_sort-icon.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\Daniel\Documents\saas_plugando\resources\views/livewire/partials/_sort-icon.blade.php ENDPATH**/ ?>

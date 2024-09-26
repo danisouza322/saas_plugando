@@ -14,6 +14,7 @@ class CreateCliente extends Component
     public $cnpj;
     public $nome_fantasia;
     public $regime_tributario;
+    public $atividadesEconomicas;
     public $simples;
     public $mei;
     public $data_abertura;
@@ -73,6 +74,7 @@ class CreateCliente extends Component
             'cnpj' => $this->cnpj,
             'nome_fantasia' => $this->nome_fantasia,
             'regime_tributario' => $this->regime_tributario,
+            'atividadesEconomicas' => $this->atividadesEconomicas,
             'data_abertura' => $this->data_abertura,
             'porte' => $this->porte,
             'capital_social' => $this->capital_social,
@@ -93,15 +95,6 @@ class CreateCliente extends Component
             'estado' => $this->estado,
             'municipio_ibge' => $this->municipio_ibge,
         ]);
-
-           // Salvar atividades
-        foreach ($this->atividades as $atividade) {
-            $cliente->atividadesEconomicas()->create([
-                'tipo' => $atividade['tipo'],
-                'codigo' => $atividade['codigo'],
-                'descricao' => $atividade['descricao'],
-            ]);
-    }
 
     // Salvar as inscrições estaduais
     foreach ($this->inscricoesEstaduais as $inscricao) {
@@ -125,7 +118,7 @@ class CreateCliente extends Component
 
         $this->dadosCnpj = $cnpjService->buscarDadosCnpj($this->cnpj);
 
-       ($this->dadosCnpj);
+        //dd($this->dadosCnpj);
 
         if (isset($this->dadosCnpj['error'])) {
             session()->flash('error', $this->dadosCnpj['error']);
@@ -159,28 +152,23 @@ class CreateCliente extends Component
                 $this->regime_tributario = 'lucro_presumido';
             }
 
-            // Atividades
-            $this->atividades = [];
+           // Concatenar as atividades econômicas em uma string
+        $atividades = [];
 
-            // Atividade principal
-            if (isset($this->dadosCnpj['mainActivity'])) {
-                $this->atividades[] = [
-                    'tipo' => 'Principal',
-                    'codigo' => $this->dadosCnpj['mainActivity']['id'],
-                    'descricao' => $this->dadosCnpj['mainActivity']['text'],
-                ];
-            }
+        // Atividade principal
+        if (isset($this->dadosCnpj['mainActivity'])) {
+            $atividades[] = 'Principal: ' . $this->dadosCnpj['mainActivity']['id'] . ' - ' . $this->dadosCnpj['mainActivity']['text'];
+        }
 
-             // Atividades secundárias
+        // Atividades secundárias
         if (isset($this->dadosCnpj['sideActivities']) && is_array($this->dadosCnpj['sideActivities'])) {
             foreach ($this->dadosCnpj['sideActivities'] as $atividadeSecundaria) {
-                $this->atividades[] = [
-                    'tipo' => 'Secundária',
-                    'codigo' => $atividadeSecundaria['id'],
-                    'descricao' => $atividadeSecundaria['text'],
-                ];
+                $atividades[] = 'Secundária: ' . $atividadeSecundaria['id'] . ' - ' . $atividadeSecundaria['text'];
             }
-        }    
+        }
+
+        // Armazenar as atividades econômicas como uma string separada por quebras de linha
+        $this->atividadesEconomicas = implode("\n", $atividades); 
 
          // **Processar inscrições estaduais**
          $this->inscricoesEstaduais = [];
@@ -190,7 +178,7 @@ class CreateCliente extends Component
                  $this->inscricoesEstaduais[] = [
                      'estado' => $registration['state'] ?? '',
                      'numero' => $registration['number'] ?? '',
-                     'ativa' => $registration['enabled'] ?? false,
+                     'ativa' => $registration['enabled'] ? 'Ativa' : 'Inativo',
                      'data_status' => $registration['statusDate'] ?? '',
                      'status_texto' => $registration['status']['text'] ?? '',
                      'tipo_texto' => $registration['type']['text'] ?? '',

@@ -150,6 +150,7 @@
                             <div class="fs-15 mt-3">Inscrições Estaduais</div>
                         </div>
                         @foreach($inscricoesEstaduais as $index => $inscricao)
+
                             <div class="col-md-2 mb-3">
                                 <label for="inscricoesEstaduais_{{ $index }}_estado" class="form-label">Estado:</label>
                                 <input type="text" id="inscricoesEstaduais_{{ $index }}_estado"
@@ -168,18 +169,17 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-2 mb-3">
+                               
+                            <div class="col-md-3 mb-3">
                                 <label for="inscricoesEstaduais_{{ $index }}_ativa" class="form-label">Ativa:</label>
-                                <select id="inscricoesEstaduais_{{ $index }}_ativa"
-                                        class="form-control border-dashed @error('inscricoesEstaduais.'.$index.'.ativa') is-invalid @enderror"
-                                        wire:model="inscricoesEstaduais.{{ $index }}.ativa">
-                                    <option value="1" {{ $inscricao['ativa'] ? 'selected' : '' }}>Sim</option>
-                                    <option value="0" {{ !$inscricao['ativa'] ? 'selected' : '' }}>Não</option>
-                                </select>
+                                <input type="text" id="inscricoesEstaduais_{{ $index }}_ativa"
+                                    class="form-control border-dashed @error('inscricoesEstaduais.'.$index.'.ativa') is-invalid @enderror"
+                                    wire:model="inscricoesEstaduais.{{ $index }}.ativa">
                                 @error('inscricoesEstaduais.'.$index.'.ativa')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+
                             <div class="col-md-3 mb-3">
                                 <label for="inscricoesEstaduais_{{ $index }}_status_texto" class="form-label">Status:</label>
                                 <input type="text" id="inscricoesEstaduais_{{ $index }}_status_texto"
@@ -191,28 +191,10 @@
                             </div>
                         @endforeach
                         <div class="col-md-12">
-                            <div class="fs-15 mt-3">Atividades Econômicas</div>    
+                            <label for="atividadesEconomicas" class="form-label">Atividades Econômicas:</label>
+                            <textarea id="atividadesEconomicas" class="form-control @error('atividadesEconomicas') is-invalid @enderror" wire:model="atividadesEconomicas" rows="5"></textarea>
+                            @error('atividadesEconomicas') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        @foreach($atividades as $index => $atividade)
-                            <div class="col-md-3 mb-3">
-                                <label for="atividades_{{ $index }}_codigo" class="form-label">Código ({{ $atividade['tipo'] }}):</label>
-                                <input type="text" id="atividades_{{ $index }}_codigo"
-                                    class="form-control border-dashed @error('atividades.'.$index.'.codigo') is-invalid @enderror"
-                                    wire:model="atividades.{{ $index }}.codigo">
-                                @error('atividades.'.$index.'.codigo')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-9 mb-3">
-                                <label for="atividades_{{ $index }}_descricao" class="form-label">Descrição ({{ $atividade['tipo'] }}):</label>
-                                <input type="text" id="atividades_{{ $index }}_descricao"
-                                    class="form-control border-dashed @error('atividades.'.$index.'.descricao') is-invalid @enderror"
-                                    wire:model="atividades.{{ $index }}.descricao">
-                                @error('atividades.'.$index.'.descricao')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        @endforeach
 
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit">Cadastrar</button>

@@ -8,6 +8,10 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
 <script src="<?php echo e(URL::asset('build/js/app.js')); ?>"></script>
+<!-- listjs init -->
+<script src="<?php echo e(URL::asset('build/js/clientes.js')); ?>"></script>
+<!-- Sweet Alerts js -->
+<script src="<?php echo e(URL::asset('build/libs/sweetalert2/sweetalert2.min.js')); ?>"></script>
 <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('showToast', (message) => {

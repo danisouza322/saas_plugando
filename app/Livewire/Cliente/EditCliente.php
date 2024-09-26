@@ -23,6 +23,7 @@ class EditCliente extends Component
     public $regime_tributario;
     public $porte;
     public $natureza_juridica;
+    public $atividadesEconomicas;
     public $simples;
     public $mei;
     public $cep;
@@ -51,7 +52,9 @@ class EditCliente extends Component
     {
         $this->clienteId = $clienteId;
 
-        $cliente = Cliente::with('atividadesEconomicas', 'inscricoesEstaduais')->findOrFail($clienteId);
+        $cliente = Cliente::with(['inscricoesEstaduais', 'endereco'])->findOrFail($clienteId);
+
+        //dd($cliente);
 
         $this->razao_social = $cliente->razao_social;
         $this->cnpj = $cliente->cnpj;
@@ -59,27 +62,20 @@ class EditCliente extends Component
         $this->regime_tributario = $cliente->regime_tributario;
         $this->porte = $cliente->porte;
         $this->natureza_juridica = $cliente->natureza_juridica;
+        $this->atividadesEconomicas = $cliente->atividadesEconomicas;
         $this->simples = $cliente->simples;
         $this->mei = $cliente->mei;
-        $this->cep = $cliente->cep;
-        $this->rua = $cliente->rua;
-        $this->numero = $cliente->numero;
-        $this->bairro = $cliente->bairro;
-        $this->complemento = $cliente->complemento;
-        $this->estado = $cliente->estado;
-        $this->cidade = $cliente->cidade;
+        $this->cep = $cliente->endereco->cep;
+        $this->rua = $cliente->endereco->rua;
+        $this->numero = $cliente->endereco->numero;
+        $this->bairro = $cliente->endereco->bairro;
+        $this->complemento = $cliente->endereco->complemento;
+        $this->cidade = $cliente->endereco->cidade;
+        $this->estado = $cliente->endereco->estado;
+       // $this->municipio_ibge = $cliente->endereco->municipio_ibge;
         $this->email = $cliente->email;
         $this->telefone = $cliente->telefone;
         $this->celular = $cliente->celular;
-
-        // Carregar as atividades econômicas
-        $this->atividades = $cliente->atividadesEconomicas->map(function ($atividade) {
-            return [
-                'tipo' => $atividade->tipo,
-                'codigo' => $atividade->codigo,
-                'descricao' => $atividade->descricao,
-            ];
-        })->toArray();
 
         // Carregar as inscrições estaduais
         $this->inscricoesEstaduais = $cliente->inscricoesEstaduais->map(function ($inscricao) {
@@ -159,7 +155,7 @@ class EditCliente extends Component
                     $this->inscricoesEstaduais[] = [
                         'estado' => $registration['state'] ?? '',
                         'numero' => $registration['number'] ?? '',
-                        'ativa' => $registration['enabled'] ?? false,
+                        'ativa' => $registration['enabled'] ? 'Ativa' : 'Inativo',
                         'data_status' => $registration['statusDate'] ?? '',
                         'status_texto' => $registration['status']['text'] ?? '',
                         'tipo_texto' => $registration['type']['text'] ?? '',
@@ -179,7 +175,7 @@ class EditCliente extends Component
         $this->validate([
             // Suas regras de validação
             'razao_social' => 'required|string',
-            'cnpj' => 'required|cnpj|unique:clientes,cnpj,' . $this->clienteId,
+           // 'cnpj' => 'required|cnpj|unique:clientes,cnpj,' . $this->clienteId,
             'regime_tributario' => 'required',
             // Outras regras...
         ]);
@@ -209,18 +205,6 @@ class EditCliente extends Component
             'celular' => $this->celular,
         ]);
 
-        // Atualizar as atividades econômicas
-        // Excluir as atividades atuais
-        $cliente->atividadesEconomicas()->delete();
-
-        // Adicionar as novas atividades
-        foreach ($this->atividades as $atividade) {
-            $cliente->atividadesEconomicas()->create([
-                'tipo' => $atividade['tipo'],
-                'codigo' => $atividade['codigo'],
-                'descricao' => $atividade['descricao'],
-            ]);
-        }
 
         // Atualizar as inscrições estaduais
         // Excluir as inscrições atuais
@@ -242,7 +226,7 @@ class EditCliente extends Component
         session()->flash('message', 'Cliente atualizado com sucesso!');
 
         // Redirecionar ou executar outra ação
-        return redirect()->route('clientes.index');
+        return redirect()->route('painel.clientes.index');
     }
 
     public function render()

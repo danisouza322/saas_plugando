@@ -383,14 +383,16 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
+
                         <div class="col-md-12">
-                            <div class="fs-15 mt-3">Atividades Econômicas</div>    
+                            <div class="fs-15 mt-3">Inscrições Estaduais</div>
                         </div>
-                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $atividades; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $atividade): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <div class="col-md-3 mb-3">
-                                <label for="atividades_<?php echo e($index); ?>_codigo" class="form-label">Código (<?php echo e($atividade['tipo']); ?>):</label>
-                                <input type="text" id="atividades_<?php echo e($index); ?>_codigo"
-                                    class="form-control border-dashed <?php $__errorArgs = ['atividades.'.$index.'.codigo'];
+                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $inscricoesEstaduais; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $inscricao): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+
+                            <div class="col-md-2 mb-3">
+                                <label for="inscricoesEstaduais_<?php echo e($index); ?>_estado" class="form-label">Estado:</label>
+                                <input type="text" id="inscricoesEstaduais_<?php echo e($index); ?>_estado"
+                                    class="form-control border-dashed <?php $__errorArgs = ['inscricoesEstaduais.'.$index.'.estado'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -398,8 +400,8 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                    wire:model="atividades.<?php echo e($index); ?>.codigo">
-                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['atividades.'.$index.'.codigo'];
+                                    wire:model="inscricoesEstaduais.<?php echo e($index); ?>.estado">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['inscricoesEstaduais.'.$index.'.estado'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -410,10 +412,10 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                             </div>
-                            <div class="col-md-9 mb-3">
-                                <label for="atividades_<?php echo e($index); ?>_descricao" class="form-label">Descrição (<?php echo e($atividade['tipo']); ?>):</label>
-                                <input type="text" id="atividades_<?php echo e($index); ?>_descricao"
-                                    class="form-control border-dashed <?php $__errorArgs = ['atividades.'.$index.'.descricao'];
+                            <div class="col-md-3 mb-3">
+                                <label for="inscricoesEstaduais_<?php echo e($index); ?>_numero" class="form-label">Número:</label>
+                                <input type="text" id="inscricoesEstaduais_<?php echo e($index); ?>_numero"
+                                    class="form-control border-dashed <?php $__errorArgs = ['inscricoesEstaduais.'.$index.'.numero'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -421,8 +423,56 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                    wire:model="atividades.<?php echo e($index); ?>.descricao">
-                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['atividades.'.$index.'.descricao'];
+                                    wire:model="inscricoesEstaduais.<?php echo e($index); ?>.numero">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['inscricoesEstaduais.'.$index.'.numero'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                               
+                            <div class="col-md-3 mb-3">
+                                <label for="inscricoesEstaduais_<?php echo e($index); ?>_ativa" class="form-label">Ativa:</label>
+                                <input type="text" id="inscricoesEstaduais_<?php echo e($index); ?>_ativa"
+                                    class="form-control border-dashed <?php $__errorArgs = ['inscricoesEstaduais.'.$index.'.ativa'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                    wire:model="inscricoesEstaduais.<?php echo e($index); ?>.ativa">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['inscricoesEstaduais.'.$index.'.ativa'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="inscricoesEstaduais_<?php echo e($index); ?>_status_texto" class="form-label">Status:</label>
+                                <input type="text" id="inscricoesEstaduais_<?php echo e($index); ?>_status_texto"
+                                    class="form-control border-dashed <?php $__errorArgs = ['inscricoesEstaduais.'.$index.'.status_texto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                    wire:model="inscricoesEstaduais.<?php echo e($index); ?>.status_texto">
+                                <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['inscricoesEstaduais.'.$index.'.status_texto'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -434,6 +484,26 @@ endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                             </div>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
+                        <div class="col-md-12">
+                            <label for="atividadesEconomicas" class="form-label">Atividades Econômicas:</label>
+                            <textarea id="atividadesEconomicas" class="form-control <?php $__errorArgs = ['atividadesEconomicas'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" wire:model="atividadesEconomicas" rows="5"></textarea>
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['atividadesEconomicas'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-danger"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+
                         <div class="col-12">
                             <button class="btn btn-primary" type="submit">Cadastrar</button>
                         </div>

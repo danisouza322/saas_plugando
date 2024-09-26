@@ -85,10 +85,10 @@
                                                     </td>
                                                     <td>{{ $cliente->razao_social }}</td>
                                                     <td>{{ $cliente->cnpj }}</td>
-                                                    <td>{{ $cliente->inscricao_estadual }}</td>
+                                                    <td>{{ $cliente->inscricaoEstadualAtiva->numero ?? 'Insento/Inativo' }}</td>
                                                     <td>{{ $cliente->regime_tributario_label }}</td>
                                                     <td>
-                                                    <a href="{{ route('painel.clientes.edit', ['clienteId' => $cliente->id]) }}" class="btn btn-primary">Editar</a>
+                                                    <a href="{{ route('painel.clientes.edit', ['clienteId' => $cliente->id]) }}" class="btn btn-sm btn-primary">Editar</a>
                                                         <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="{{ $cliente->id }}">Excluir</button>
                                                     </td>
                                                 </tr>

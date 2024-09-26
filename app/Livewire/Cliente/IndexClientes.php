@@ -68,15 +68,20 @@ class IndexClientes extends Component
     public function render()
     {
 
-        $clientes = Cliente::where('empresa_id', auth()->user()->empresa_id)
-            ->where(function($query){
+        $clientes = Cliente::with(['inscricaoEstadualAtiva'])
+        ->where('empresa_id', auth()->user()->empresa_id)
+        ->when($this->search, function($query) {
+            $query->where(function($query){
                 $query->where('razao_social', 'like', '%'.$this->search.'%')
                       ->orWhere('cnpj', 'like', '%'.$this->search.'%')
-                     // ->orWhere('inscricao_estadual', 'like', '%'.$this->search.'%')
-                      ->orWhere('regime_tributario', 'like', '%'.$this->search.'%');
-            })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(10);
+                      ->orWhere('regime_tributario', 'like', '%'.$this->search.'%')
+                      ->orWhereHas('inscricoesEstaduais', function($q){
+                          $q->where('numero', 'like', '%'.$this->search.'%');
+                      });
+            });
+        })
+        ->orderBy($this->sortField, $this->sortDirection)
+        ->paginate(3);
 
         return view('livewire.cliente.index-clientes', [
             'clientes' => $clientes,

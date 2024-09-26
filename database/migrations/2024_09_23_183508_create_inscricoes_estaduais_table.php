@@ -16,7 +16,7 @@ return new class extends Migration
         $table->unsignedBigInteger('cliente_id');
         $table->string('estado', 2);
         $table->string('numero');
-        $table->boolean('ativa')->default(true);
+        $table->string('ativa')->default(true);
         $table->date('data_status')->nullable();
         $table->unsignedBigInteger('status_id')->nullable();
         $table->string('status_texto')->nullable();

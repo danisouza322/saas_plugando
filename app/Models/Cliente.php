@@ -16,6 +16,7 @@ class Cliente extends Model
         'razao_social',
         'nome_fantasia',
         'regime_tributario',
+        'atividadesEconomicas',
         'data_abertura',
         'porte',
         'capital_social',
@@ -41,14 +42,10 @@ class Cliente extends Model
         return $this->hasMany(InscricaoEstadual::class);
     }
 
+
     public function sociosAdministradores()
     {
         return $this->hasMany(SocioAdministrador::class);
-    }
-
-    public function atividadesEconomicas()
-    {
-        return $this->hasMany(AtividadeEconomica::class);
     }
 
     public function getRegimeTributarioLabelAttribute()
@@ -86,5 +83,12 @@ class Cliente extends Model
             // Formata o CNPJ: 99.999.999/9999-99
             return preg_replace('/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/', '$1.$2.$3/$4-$5', $cnpj);
         }
+
+        public function inscricaoEstadualAtiva()
+{
+             return $this->hasOne(InscricaoEstadual::class)
+                ->where('ativa', 'ativa')
+                ->orderBy('id');
+}
            
 }
