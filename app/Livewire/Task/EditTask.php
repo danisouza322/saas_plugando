@@ -129,10 +129,12 @@ class EditTask extends Component
                      ->where('id', '!=', Auth::id()) // Excluir o usuário atual, se necessário
                      ->get(); // Filtrar usuários pela mesma empresa
 
-        return view('livewire.edit-task', [
+        return view('livewire.task.edit-task', [
             'clientes' => $clientes,
             'users' => $users,
-        ]);
+        ])->layout('layouts.app', [
+            'titulo' => 'Editar Cliente', // Passando 'titulo' para o layout
+        ]);;
     }
 }
 

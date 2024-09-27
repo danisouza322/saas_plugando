@@ -74,6 +74,10 @@ class TaskList extends Component
 
     public function render()
     {
-        return view('livewire.task-list');
+        return view('livewire.task.task-list')
+        ->layout('layouts.app', [
+            'titulo' => 'Editar Cliente', // Passando 'titulo' para o layout
+        ]);
     }
 }
+

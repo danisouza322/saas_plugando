@@ -1,13 +1,13 @@
-<!-- resources/views/livewire/task/create-task.blade.php -->
+<!-- resources/views/livewire/task/edit-task.blade.php -->
 
 <div>
     <!-- Modal do Velzon (Sempre presente no DOM) -->
-    <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form wire:submit.prevent="createTask">
+                <form wire:submit.prevent="updateTask">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createTaskModalLabel">Criar Nova Tarefa</h5>
+                        <h5 class="modal-title" id="editTaskModalLabel">Editar Tarefa</h5>
                         <button type="button" class="btn-close" wire:click="closeModal" aria-label="Fechar"></button>
                     </div>
                     <div class="modal-body">
@@ -54,6 +54,16 @@
                             @error('cliente_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
+                        <!-- Status da Tarefa -->
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select id="status" class="form-select @error('status') is-invalid @enderror" wire:model="status">
+                                <option value="pending">Pendente</option>
+                                <option value="completed">Concluída</option>
+                            </select>
+                            @error('status') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
                         <!-- Atribuir Usuários -->
                         <div class="mb-3">
                             <label for="user_ids" class="form-label">Atribuir a Usuários</label>
@@ -67,7 +77,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" wire:click="closeModal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Criar Tarefa</button>
+                        <button type="submit" class="btn btn-primary">Atualizar Tarefa</button>
                     </div>
                 </form>
             </div>

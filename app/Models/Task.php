@@ -1,5 +1,6 @@
 <?php
 // app/Models/Task.php
+// app/Models/Task.php
 
 namespace App\Models;
 
@@ -16,7 +17,7 @@ class Task extends Model
     use HasFactory;
 
     protected $fillable = [
-        'empresa_id', // Adicionado
+        'empresa_id',
         'titulo',
         'descricao',
         'tipo',

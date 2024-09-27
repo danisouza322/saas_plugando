@@ -70,7 +70,7 @@ class CreateTaskTemplate extends Component
         session()->flash('message', 'Modelo de tarefa criado com sucesso.');
 
         $this->closeModal();
-        $this->emit('taskTemplateCreated'); // Atualiza a lista de modelos
+        $this->dispatch('taskTemplateCreated'); // Atualiza a lista de modelos
     }
 
     public function render()
@@ -78,7 +78,7 @@ class CreateTaskTemplate extends Component
         $clientes = Cliente::where('empresa_id', Auth::user()->empresa_id)->get();
         $users = User::where('empresa_id', Auth::user()->empresa_id)->get();
 
-        return view('livewire.create-task-template', [
+        return view('livewire.task.create-task-template', [
             'clientes' => $clientes,
             'users' => $users,
         ]);

@@ -1,19 +1,21 @@
-@extends('layouts.master')
+
 <!-- CSS e outros links -->
-@section('title')
-{{ $titulo ?? 'Dashaboard' }}
-@endsection
-@section('content')
-{{ $slot }}
-@endsection
-@section('script')
-<script src="{{ URL::asset('build/js/app.js') }}"></script>
-<script src="{{ URL::asset('build/js/pages/profile-setting.init.js') }}"></script>
-<script src="{{ URL::asset('build/js/clientes.js') }}"></script>
+<?php $__env->startSection('title'); ?>
+<?php echo e($titulo ?? 'Dashaboard'); ?>
+
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
+<?php echo e($slot); ?>
+
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
+<script src="<?php echo e(URL::asset('build/js/app.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('build/js/pages/profile-setting.init.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('build/js/clientes.js')); ?>"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
 <!-- Sweet Alerts js -->
-<script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="<?php echo e(URL::asset('build/libs/sweetalert2/sweetalert2.min.js')); ?>"></script>
     <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Select2 JS -->
@@ -87,4 +89,5 @@
     </script>
     <!-- Adicionar o script para escutar o evento Livewire -->
    
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Daniel\Documents\saas_plugando\resources\views/layouts/app.blade.php ENDPATH**/ ?>

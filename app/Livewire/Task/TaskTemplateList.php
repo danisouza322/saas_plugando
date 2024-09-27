@@ -44,6 +44,9 @@ class TaskTemplateList extends Component
 
     public function render()
     {
-        return view('livewire.task-template-list');
+        return view('livewire.task.task-template-list')
+        ->layout('layouts.app', [
+            'titulo' => 'Editar Cliente', // Passando 'titulo' para o layout
+        ]);
     }
 }

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Empresa\CadastroEmpresa;
 use App\Livewire\Empresa\EditarEmpresa;
+use App\Livewire\Task\TaskList;
+use App\Livewire\Task\TaskTemplateList;
 use App\Livewire\User\EditProfile;
 
 /*
@@ -45,6 +47,11 @@ Route::middleware(['auth'])->prefix('painel')->name('painel.')->group(function (
     Route::get('/clientes', IndexClientes::class)->name('clientes.index');
     Route::get('/clientes/novo', CreateCliente::class)->name('clientes.create');
     Route::get('/clientes/editar/{clienteId}', EditCliente::class)->name('clientes.edit');
+
+    Route::get('/tarefas', TaskList::class)->name('tarefas.index');
+
+    // Rota para Gerenciamento de Modelos de Tarefas
+    Route::get('/tarefas/modelos', TaskTemplateList::class)->name('tarefas.modelos.index');
 
 
     // Você pode adicionar outras rotas aqui

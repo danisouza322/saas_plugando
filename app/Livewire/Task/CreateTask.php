@@ -3,7 +3,6 @@
 namespace App\Livewire\Task;
 
 use Livewire\Component;
-
 use App\Models\Task;
 use App\Models\Cliente;
 use App\Models\User;
@@ -33,17 +32,17 @@ class CreateTask extends Component
         'openCreateTaskModal' => 'openModal',
     ];
 
-    public $isOpen = false;
-
     public function openModal()
     {
         $this->resetInputFields();
-        $this->isOpen = true;
+        // Emitir um evento do navegador para abrir o modal
+        $this->dispatch('openCreateTaskModal');
     }
 
     public function closeModal()
     {
-        $this->isOpen = false;
+        // Emitir um evento do navegador para fechar o modal
+        //$this->dispatch('closeCreateTaskModal');
     }
 
     private function resetInputFields()
@@ -81,10 +80,14 @@ class CreateTask extends Component
             }
         }
 
-        session()->flash('message', 'Tarefa criada com sucesso.');
+        // Emitir evento de fechamento do modal
+      //  $this->closeModal();
 
-        $this->closeModal();
-        $this->emit('taskUpdated'); // Atualiza a lista de tarefas
+        // Emitir um evento para atualizar a lista de tarefas
+        $this->emit('taskUpdated');
+
+        // Emitir uma notificação de sucesso
+        $this->dispatchBrowserEvent('showToast', ['message' => 'Tarefa criada com sucesso.']);
     }
 
     public function render()
@@ -94,9 +97,11 @@ class CreateTask extends Component
                      ->where('id', '!=', Auth::id()) // Excluir o usuário atual, se necessário
                      ->get(); // Filtrar usuários pela mesma empresa
 
-        return view('livewire.create-task', [
+        return view('livewire.task.create-task', [
             'clientes' => $clientes,
             'users' => $users,
-        ]);
+        ])->layout('layouts.app', [
+            'titulo' => 'Editar Cliente', // Passando 'titulo' para o layout
+        ]);;
     }
 }

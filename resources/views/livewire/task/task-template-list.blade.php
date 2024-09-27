@@ -1,7 +1,7 @@
 <div>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Modelos de Tarefas</h2>
-        <button class="btn btn-primary" wire:click="$emit('openCreateTaskTemplateModal')">Novo Modelo</button>
+        <button class="btn btn-primary" wire:click="$dispatch('openCreateTaskTemplateModal')">Novo Modelo</button>
     </div>
 
     <!-- Tabela de Modelos de Tarefas -->
@@ -25,7 +25,7 @@
                     <td>{{ ucfirst($template->frequencia) }}</td>
                     <td>{{ $template->dia_do_mes }}</td>
                     <td>
-                        <button class="btn btn-sm btn-secondary" wire:click="$emit('openEditTaskTemplateModal', {{ $template->id }})">Editar</button>
+                        <button class="btn btn-sm btn-secondary" wire:click="$dispatch('openEditTaskTemplateModal', {{ $template->id }})">Editar</button>
                         <button class="btn btn-sm btn-danger" wire:click="deleteTaskTemplate({{ $template->id }})" onclick="confirm('Tem certeza que deseja deletar este modelo de tarefa?') || event.stopImmediatePropagation()">Deletar</button>
                     </td>
                 </tr>
@@ -45,6 +45,6 @@
     @endif
 
     <!-- Inclusão dos Componentes de Criação e Edição de Modelos de Tarefas -->
-    @livewire('create-task-template')
-    @livewire('edit-task-template')
+     @livewire('task.create-task-template')
+    @livewire('task.edit-task-template')
 </div>
