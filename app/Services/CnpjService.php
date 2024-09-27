@@ -20,7 +20,7 @@ class CnpjService
             // Faz a requisição para a API pública
             
             $response = Http::withHeaders([
-                'Authorization' => '0b76b57b-ef0f-4cf9-8e54-27d3ffc7249e-c8832ada-74ca-4360-8e0f-959d23d2631e',
+                'Authorization' => '4b80a913-6fe9-40aa-ba10-2e6d07cf1ca5-224e1411-8e20-4b23-b742-00f26bce5769',
             ])->get("https://api.cnpja.com/office/{$cnpjLimpo}?simples=true&registrations=BR");
 
             if ($response->successful()) {

@@ -1,4 +1,5 @@
 
+<!-- CSS e outros links -->
 <?php $__env->startSection('title'); ?>
 <?php echo e($titulo ?? 'Dashaboard'); ?>
 
@@ -11,10 +12,18 @@
 <script src="<?php echo e(URL::asset('build/js/app.js')); ?>"></script>
 <script src="<?php echo e(URL::asset('build/js/pages/profile-setting.init.js')); ?>"></script>
 <script src="<?php echo e(URL::asset('build/js/clientes.js')); ?>"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
 <!-- Sweet Alerts js -->
 <script src="<?php echo e(URL::asset('build/libs/sweetalert2/sweetalert2.min.js')); ?>"></script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
 <script>
         document.addEventListener('livewire:initialized', () => {
+
             Livewire.on('showToast', (message) => {
                 Toastify({
                     text: message,
@@ -44,7 +53,43 @@
                 toastr.success('Avatar atualizado com sucesso!');
             });
 
-        });
+                // Listener para abrir o modal de criação de tarefas
+                Livewire.on('openCreateTaskModal', () => {
+                    var createTaskModal = new bootstrap.Modal(document.getElementById('createTaskModal'), {
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    createTaskModal.show();
+                });
+
+                // Listener para fechar o modal de criação de tarefas após a submissão
+                Livewire.on('closeCreateTaskModal', () => {
+                    var createTaskModalEl = document.getElementById('createTaskModal');
+                    var createTaskModal = bootstrap.Modal.getInstance(createTaskModalEl);
+                    if (createTaskModal) {
+                        createTaskModal.hide();
+                    }
+                });
+
+              // Abrir o modal de edição de tarefas
+                    Livewire.on('openEditTaskModal', () => {
+                        var editTaskModal = new bootstrap.Modal(document.getElementById('editTaskModal'), {
+                            backdrop: 'static',
+                            keyboard: false
+                        });
+                        editTaskModal.show();
+                    });
+
+                    // Fechar o modal de edição de tarefas
+                    Livewire.on('closeEditTaskModal', () => {
+                        var editTaskModalEl = document.getElementById('editTaskModal');
+                        var editTaskModal = bootstrap.Modal.getInstance(editTaskModalEl);
+                        if (editTaskModal) {
+                            editTaskModal.hide();
+                        }
+                    });
+                        });
+
     </script>
     <!-- Adicionar o script para escutar o evento Livewire -->
    

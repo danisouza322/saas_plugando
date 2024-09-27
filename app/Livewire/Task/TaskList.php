@@ -5,11 +5,11 @@ namespace App\Livewire\Task;
 use Livewire\Component;
 use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
-
 class TaskList extends Component
 {
     public $tasks;
     public $statusFilter = 'all'; // Opções: 'all', 'pending', 'completed'
+
 
     protected $listeners = [
         'taskUpdated' => 'loadTasks',
@@ -21,6 +21,7 @@ class TaskList extends Component
     {
         $this->loadTasks();
     }
+    
 
     public function loadTasks()
     {
@@ -67,7 +68,7 @@ class TaskList extends Component
         $task->save();
 
         // Emitir evento para exibir notificação
-        $this->emit('showToast', 'Tarefa marcada como concluída.');
+        $this->dispatch('showToast', 'Tarefa marcada como concluída.');
 
         $this->loadTasks();
     }
@@ -76,7 +77,7 @@ class TaskList extends Component
     {
         return view('livewire.task.task-list')
         ->layout('layouts.app', [
-            'titulo' => 'Editar Cliente', // Passando 'titulo' para o layout
+            'titulo' => 'Lista de Tar', // Passando 'titulo' para o layout
         ]);
     }
 }

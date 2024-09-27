@@ -1,14 +1,12 @@
-<!-- resources/views/livewire/task/create-task.blade.php -->
-
 <div>
-    <!-- Modal do Velzon (Sempre presente no DOM) -->
-    <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <!-- Modal de Criação de Tarefas -->
+    <div wire:ignore.self class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form wire:submit.prevent="createTask">
+            <form wire:submit.prevent="createTask">
                     <div class="modal-header">
                         <h5 class="modal-title" id="createTaskModalLabel">Criar Nova Tarefa</h5>
-                        <button type="button" class="btn-close" wire:click="closeModal" aria-label="Fechar"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
                     <div class="modal-body">
                         <!-- Título da Tarefa -->
@@ -48,7 +46,7 @@
                             <select id="cliente_id" class="form-select @error('cliente_id') is-invalid @enderror" wire:model="cliente_id">
                                 <option value="">Selecione um cliente</option>
                                 @foreach($clientes as $cliente)
-                                    <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                                    <option value="{{ $cliente->id }}">{{ $cliente->razao_social }}</option>
                                 @endforeach
                             </select>
                             @error('cliente_id') <span class="text-danger">{{ $message }}</span> @enderror
@@ -66,7 +64,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closeModal">Cancelar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Criar Tarefa</button>
                     </div>
                 </form>

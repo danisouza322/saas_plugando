@@ -8,6 +8,7 @@ use App\Models\Cliente;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Notifications\TaskAssignedNotification;
 
 class CreateTask extends Component
 {
@@ -28,33 +29,9 @@ class CreateTask extends Component
         'user_ids.*' => 'exists:users,id',
     ];
 
-    protected $listeners = [
-        'openCreateTaskModal' => 'openModal',
-    ];
-
-    public function openModal()
-    {
-        $this->resetInputFields();
-        // Emitir um evento do navegador para abrir o modal
-        $this->dispatch('openCreateTaskModal');
-    }
-
-    public function closeModal()
-    {
-        // Emitir um evento do navegador para fechar o modal
-        //$this->dispatch('closeCreateTaskModal');
-    }
-
-    private function resetInputFields()
-    {
-        $this->titulo = '';
-        $this->descricao = '';
-        $this->tipo = 'ad-hoc';
-        $this->data_de_vencimento = '';
-        $this->cliente_id = '';
-        $this->user_ids = [];
-    }
-
+    /**
+     * Método para criar uma nova tarefa.
+     */
     public function createTask()
     {
         $this->validate();
@@ -76,25 +53,38 @@ class CreateTask extends Component
         foreach ($this->user_ids as $userId) {
             $user = User::find($userId);
             if ($user) {
-                $user->notify(new \App\Notifications\TaskAssignedNotification($task));
+                $user->notify(new TaskAssignedNotification($task));
             }
         }
-
-        // Emitir evento de fechamento do modal
-      //  $this->closeModal();
-
-        // Emitir um evento para atualizar a lista de tarefas
-        $this->emit('taskUpdated');
+               
+        // Emitir um evento para atualizar a lista de tarefas (se houver)
+        $this->dispatch('taskUpdated');
 
         // Emitir uma notificação de sucesso
-        $this->dispatchBrowserEvent('showToast', ['message' => 'Tarefa criada com sucesso.']);
+        $this->dispatch('showToast', ['message' => 'Tarefa criada com sucesso.']);
     }
 
+    /**
+     * Resetar campos de entrada do formulário.
+     */
+    private function resetInputFields()
+    {
+        $this->titulo = '';
+        $this->descricao = '';
+        $this->tipo = 'ad-hoc';
+        $this->data_de_vencimento = '';
+        $this->cliente_id = '';
+        $this->user_ids = [];
+    }
+
+    /**
+     * Renderizar a view do componente.
+     */
     public function render()
     {
         $clientes = Cliente::where('empresa_id', Auth::user()->empresa_id)->get(); // Filtrar por empresa
         $users = User::where('empresa_id', Auth::user()->empresa_id)
-                     ->where('id', '!=', Auth::id()) // Excluir o usuário atual, se necessário
+                    // ->where('id', '!=', Auth::id()) // Excluir o usuário atual, se necessário
                      ->get(); // Filtrar usuários pela mesma empresa
 
         return view('livewire.task.create-task', [
@@ -102,6 +92,6 @@ class CreateTask extends Component
             'users' => $users,
         ])->layout('layouts.app', [
             'titulo' => 'Editar Cliente', // Passando 'titulo' para o layout
-        ]);;
+        ]);
     }
 }

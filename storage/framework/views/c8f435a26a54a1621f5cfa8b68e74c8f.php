@@ -6,19 +6,20 @@
 
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="{{route('painel.clientes.index')}}">Clientes</a></li>
+                                        <li class="breadcrumb-item"><a href="<?php echo e(route('painel.clientes.index')); ?>">Clientes</a></li>
                                         <li class="breadcrumb-item active">lista Clientes</li>
                                     </ol>
                                 </div>
 
                             </div>
                                 <!-- Mensagem de Sucesso -->
-                            @if (session()->has('message'))
+                            <!--[if BLOCK]><![endif]--><?php if(session()->has('message')): ?>
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('message') }}
+                                <?php echo e(session('message')); ?>
+
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            @endif
+                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                             <div class="card">
                                 <div class="card-header border-0">
                                 <div class="row g-4">
@@ -58,36 +59,36 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($tasks as $task)
+            <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $tasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                 <tr>
-                    <td>{{ $task->titulo }}</td>
-                    <td>{{ $task->cliente->razao_social }}</td>
-                    <td>{{ ucfirst($task->tipo) }}</td>
-                    <td>{{ \Carbon\Carbon::parse($task->data_de_vencimento)->format('d/m/Y') }}</td>
+                    <td><?php echo e($task->titulo); ?></td>
+                    <td><?php echo e($task->cliente->razao_social); ?></td>
+                    <td><?php echo e(ucfirst($task->tipo)); ?></td>
+                    <td><?php echo e(\Carbon\Carbon::parse($task->data_de_vencimento)->format('d/m/Y')); ?></td>
                     <td>
-                        @foreach($task->users as $user)
-                            <span class="badge bg-info text-dark">{{ $user->name }}</span>
-                        @endforeach
+                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $task->users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <span class="badge bg-info text-dark"><?php echo e($user->name); ?></span>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                     </td>
                     <td>
-                        @if($task->status == 'pending')
+                        <!--[if BLOCK]><![endif]--><?php if($task->status == 'pending'): ?>
                             <span class="badge bg-warning">Pendente</span>
-                        @else
+                        <?php else: ?>
                             <span class="badge bg-success">Concluída</span>
-                        @endif
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                     </td>
                     <td>
 
-                    <button class="btn btn-sm btn-secondary" wire:click="$dispatch('openEditTaskModal', { taskId: {{ $task->id }} })">Editar</button>
-                    <button class="btn btn-sm btn-success" wire:click="markAsCompleted({{ $task->id }})" {{ $task->status == 'completed' ? 'disabled' : '' }}>Concluir</button>
-                    <button class="btn btn-sm btn-danger" wire:click="deleteTask({{ $task->id }})" onclick="confirm('Tem certeza que deseja deletar esta tarefa?') || event.stopImmediatePropagation()">Deletar</button>
+                    <button class="btn btn-sm btn-secondary" wire:click="$dispatch('openEditTaskModal', { taskId: <?php echo e($task->id); ?> })">Editar</button>
+                    <button class="btn btn-sm btn-success" wire:click="markAsCompleted(<?php echo e($task->id); ?>)" <?php echo e($task->status == 'completed' ? 'disabled' : ''); ?>>Concluir</button>
+                    <button class="btn btn-sm btn-danger" wire:click="deleteTask(<?php echo e($task->id); ?>)" onclick="confirm('Tem certeza que deseja deletar esta tarefa?') || event.stopImmediatePropagation()">Deletar</button>
                     </td>
                 </tr>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <tr>
                     <td colspan="7" class="text-center">Nenhuma tarefa encontrada.</td>
                 </tr>
-            @endforelse
+            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
         </tbody>
     </table>
                                         </div>
@@ -103,6 +104,36 @@
                     </div>
 
     <!-- Inclusão dos Componentes de Criação e Edição de Tarefas -->
-    @livewire('task.create-task')
-    @livewire('task.edit-task')
-</div>
+    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('task.create-task');
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-763793169-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('task.edit-task');
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-763793169-1', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+</div><?php /**PATH C:\laragon\www\saas_plugando\resources\views/livewire/task/task-list.blade.php ENDPATH**/ ?>
