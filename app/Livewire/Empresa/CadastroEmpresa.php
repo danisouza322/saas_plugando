@@ -22,35 +22,46 @@ class CadastroEmpresa extends Component
         'password' => 'required|min:8|confirmed',
     ];
 
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+    }
+
     public function cadastrar()
-{
-    $this->validate();
+    {
+        $this->validate();
 
-    // Criar a empresa
-    $empresa = Empresa::create([
-        'nome' => $this->nome_empresa,
-        'data_inicio_plano' => now(),
-        'plano' => 'basico', // Definindo um plano padrão
-    ]);
+        try {
+            // Criar a empresa
+            $empresa = Empresa::create([
+                'nome' => $this->nome_empresa,
+                'data_inicio_plano' => now(),
+                'plano' => 'basico', // Definindo um plano padrão
+            ]);
 
-    // Criar o usuário vinculado à empresa
-    $user = User::create([
-        'name' => $this->nome,
-        'email' => $this->email,
-        'password' => Hash::make($this->password),
-        'empresa_id' => $empresa->id,
-    ]);
+            // Criar o usuário vinculado à empresa
+            $user = User::create([
+                'name' => $this->nome,
+                'email' => $this->email,
+                'password' => Hash::make($this->password),
+                'empresa_id' => $empresa->id,
+            ]);
 
-    // Autenticar o usuário
-    auth()->login($user);
+            // Autenticar o usuário
+            auth()->login($user);
 
-    session()->flash('message', 'Empresa e usuário cadastrados com sucesso!');
-    return redirect()->route('index'); // Redirecionar para o dashboard após o login
-}
+            session()->flash('message', 'Empresa e usuário cadastrados com sucesso!');
+            
+            // Redirecionar para o painel principal
+            return redirect()->route('painel.dashboard');
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'Erro ao cadastrar empresa: ' . $e->getMessage());
+        }
+    }
 
     public function render()
     {
-        return view('livewire.empresa.cadastro-empresa')
-            ->layout('layouts.guest'); // Usando um layout para páginas de convidado
+        return view('livewire.empresa.cadastro-empresa');
     }
 }

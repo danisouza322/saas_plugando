@@ -46,11 +46,23 @@
                 </li> <!-- end Dashboard Menu -->
 
                 <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{route('painel.clientes.index')}}" aria-expanded="false">
-                                <i class="ri-user-3-line"></i> <span data-key="t-widgets">Clientes</span>
-                            </a>
+                    <a class="nav-link menu-link {{ request()->routeIs('painel.clientes.*') ? 'active' : '' }}" 
+                        href="{{route('painel.clientes.index')}}" 
+                        aria-expanded="false">
+                        <i class="ri-user-3-line"></i> 
+                        <span data-key="t-widgets">Clientes</span>
+                    </a>
                 </li>
-              
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ request()->routeIs('painel.certificados.*') ? 'active' : '' }}" 
+                        href="{{route('painel.certificados.index')}}" 
+                        aria-expanded="false">
+                        <i class="ri-shield-keyhole-line"></i> 
+                        <span data-key="t-widgets">Certificados</span>
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarLayouts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLayouts">
                         <i class="bx bx-layout"></i> <span>@lang('translation.layouts')</span><span class="badge badge-pill bg-danger">@lang('translation.hot')</span>

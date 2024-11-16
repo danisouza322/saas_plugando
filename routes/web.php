@@ -10,6 +10,8 @@ use App\Livewire\Empresa\EditarEmpresa;
 use App\Livewire\Task\TaskList;
 use App\Livewire\Task\TaskTemplateList;
 use App\Livewire\User\EditProfile;
+use App\Livewire\Certificado\IndexCertificados;
+use App\Livewire\Dashboard\Index;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,41 +24,47 @@ use App\Livewire\User\EditProfile;
 |
 */
 
-Route::get('/cadastro', CadastroEmpresa::class)->name('cadastro.empresa');
-
-Auth::routes();
-
-//Language Translation
-Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
-
+// Rota inicial
 Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('root');
 
-//Update User Details
+// Rota de cadastro
+Route::get('/cadastro', function() {
+    return view('empresa.cadastro');
+})->name('cadastro.empresa');
+
+// Rotas de autenticação
+Auth::routes(['home' => 'painel.dashboard']);
+
+// Rotas de tradução
+Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
+
+// Rotas de atualização de perfil
 Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
-Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
-
-
+// Rotas do painel (protegidas por autenticação)
 Route::middleware(['auth'])->prefix('painel')->name('painel.')->group(function () {
+    // Dashboard
+    Route::get('/', \App\Livewire\Dashboard\Index::class)->name('dashboard');
+
+    // Perfil
     Route::get('/perfil', EditProfile::class)->name('perfil.editar');
-    // Rotas relacionadas à empresa
+    
+    // Empresa
     Route::get('/empresa/editar', EditarEmpresa::class)->name('empresa.editar');
 
-    // Rotas relacionadas aos clientes
+    // Clientes
     Route::get('/clientes', IndexClientes::class)->name('clientes.index');
     Route::get('/clientes/novo', CreateCliente::class)->name('clientes.create');
     Route::get('/clientes/editar/{clienteId}', EditCliente::class)->name('clientes.edit');
 
+    // Certificados
+    Route::get('/certificados', IndexCertificados::class)->name('certificados.index');
+
+    // Tasks
     Route::get('/tarefas', TaskList::class)->name('tarefas.index');
-
-    // Rota para Gerenciamento de Modelos de Tarefas
     Route::get('/tarefas/modelos', TaskTemplateList::class)->name('tarefas.modelos.index');
-
-
-    // Você pode adicionar outras rotas aqui
 });
 
-
-
-
+// Rota catch-all (deve ser a última)
+Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index')->where('any', '.*');
