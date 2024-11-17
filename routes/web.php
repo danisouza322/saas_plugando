@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Empresa\CadastroEmpresa;
 use App\Livewire\Empresa\EditarEmpresa;
-use App\Livewire\Task\TaskList;
-use App\Livewire\Task\TaskTemplateList;
 use App\Livewire\User\EditProfile;
 use App\Livewire\User\IndexUsers;
 use App\Livewire\Certificado\IndexCertificados;
@@ -26,7 +24,12 @@ use App\Livewire\Dashboard\Index;
 */
 
 // Rota inicial
-Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('root');
+Route::get('/', function() {
+    if (Auth::check()) {
+        return redirect()->route('painel.dashboard');
+    }
+    return view('auth.login');
+})->name('root');
 
 // Rota de cadastro
 Route::get('/cadastro', function() {
@@ -69,9 +72,8 @@ Route::middleware(['auth', 'verified'])->prefix('painel')->name('painel.')->grou
         Route::get('/', IndexCertificados::class)->name('index');
     });
 
-    // Tarefas (acessível por super-admin e user)
-    Route::get('/tarefas', TaskList::class)->name('tarefas.index');
-    Route::get('/tarefas/modelos', TaskTemplateList::class)->name('tarefas.modelos.index');
+    // Rota catch-all (deve ser a última)
+    Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index')->where('any', '.*');
 });
 
 // Rota catch-all (deve ser a última)

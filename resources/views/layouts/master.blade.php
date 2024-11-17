@@ -39,7 +39,6 @@
     </div>
     <!-- END layout-wrapper -->
     @livewireScripts
-    @include('layouts.customizer')
 
     <!-- JAVASCRIPT -->
     @include('layouts.vendor-scripts')

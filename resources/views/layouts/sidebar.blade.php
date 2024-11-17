@@ -77,35 +77,6 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('painel.tarefas.index') }}">
-                        <i class="ri-task-line"></i> 
-                        <span data-key="t-tarefas">Tarefas</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarLayouts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLayouts">
-                        <i class="bx bx-layout"></i> <span>@lang('translation.layouts')</span><span class="badge badge-pill bg-danger">@lang('translation.hot')</span>
-                    </a>
-                    <div class="collapse menu-dropdown" id="sidebarLayouts">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="layouts-vertical" target="_blank" class="nav-link">Vertical</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="layouts-detached" target="_blank" class="nav-link">@lang('translation.detached')</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="layouts-two-column" target="_blank" class="nav-link">@lang('translation.two-column')</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="layouts-vertical-hovered" target="_blank" class="nav-link">@lang('translation.hovered')</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li> <!-- end Dashboard Menu -->
-
                 <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.pages')</span></li>
 
                 <li class="nav-item">
