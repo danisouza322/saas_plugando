@@ -3,7 +3,7 @@
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <!-- Dark Logo-->
-        <a href="index" class="logo logo-dark">
+        <a href="{{ route('painel.dashboard') }}" class="logo logo-dark">
             <span class="logo-sm">
                 <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="" height="22">
             </span>
@@ -12,7 +12,7 @@
             </span>
         </a>
         <!-- Light Logo-->
-        <a href="index" class="logo logo-light">
+        <a href="{{ route('painel.dashboard') }}" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ URL::asset('build/images/logo-sm.png') }}" alt="" height="22">
             </span>
@@ -33,33 +33,54 @@
             <ul class="navbar-nav" id="navbar-nav">
                 <li class="menu-title"><span>@lang('translation.menu')</span></li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
-                        <i class="bx bxs-dashboard"></i> <span>@lang('translation.dashboards')</span>
+                    <a class="nav-link menu-link {{ request()->routeIs('painel.dashboard') ? 'active' : '' }}" 
+                        href="{{ route('painel.dashboard') }}" 
+                        aria-expanded="false">
+                        <i class="ri-dashboard-2-line"></i> 
+                        <span data-key="t-dashboards">Dashboard</span>
                     </a>
-                    <div class="collapse menu-dropdown" id="sidebarDashboards">
+                </li>
+
+                @if(auth()->user()->hasRole('super-admin'))
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarGerencial" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarGerencial">
+                        <i class="ri-admin-line"></i> <span data-key="t-gerencial">Gerencial</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarGerencial">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="index" class="nav-link">@lang('translation.ecommerce')</a>
+                                <a href="{{ route('painel.gerencial.usuarios.index') }}" class="nav-link">
+                                    Usuários
+                                </a>
                             </li>
                         </ul>
                     </div>
-                </li> <!-- end Dashboard Menu -->
+                </li>
+                @endif
 
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ request()->routeIs('painel.clientes.*') ? 'active' : '' }}" 
-                        href="{{route('painel.clientes.index')}}" 
+                        href="{{ route('painel.clientes.index') }}" 
                         aria-expanded="false">
-                        <i class="ri-user-3-line"></i> 
-                        <span data-key="t-widgets">Clientes</span>
+                        <i class="ri-user-2-line"></i> 
+                        <span data-key="t-clientes">Clientes</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ request()->routeIs('painel.certificados.*') ? 'active' : '' }}" 
-                        href="{{route('painel.certificados.index')}}" 
+                        href="{{ route('painel.certificados.index') }}" 
                         aria-expanded="false">
-                        <i class="ri-shield-keyhole-line"></i> 
-                        <span data-key="t-widgets">Certificados</span>
+                        <i class="ri-file-shield-2-line"></i> 
+                        <span data-key="t-certificados">Certificados</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('painel.tarefas.index') }}">
+                        <i class="ri-task-line"></i> 
+                        <span data-key="t-tarefas">Tarefas</span>
                     </a>
                 </li>
 

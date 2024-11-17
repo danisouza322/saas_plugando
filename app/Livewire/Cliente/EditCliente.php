@@ -48,11 +48,11 @@ class EditCliente extends Component
         // Outras regras de validação...
     ];
 
-    public function mount($clienteId)
+    public function mount($cliente)
     {
-        $this->clienteId = $clienteId;
+        $this->clienteId = $cliente;
 
-        $cliente = Cliente::with(['inscricoesEstaduais', 'endereco'])->findOrFail($clienteId);
+        $cliente = Cliente::with(['inscricoesEstaduais', 'endereco'])->findOrFail($this->clienteId);
 
         //dd($cliente);
 
@@ -237,5 +237,3 @@ class EditCliente extends Component
         ]);
     }
 }
-
-

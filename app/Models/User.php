@@ -51,7 +51,7 @@ class User extends Authenticatable
         return $this->belongsTo(Empresa::class);
     }
 
-     /**
+    /**
      * Relação muitos-para-muitos com Task.
      */
     public function tasks()
@@ -67,11 +67,36 @@ class User extends Authenticatable
         return $this->hasMany(TaskTemplate::class);
     }
 
-     /**
+    /**
      * Relação com Clientes via Empresa.
      */
     public function clientes()
     {
         return $this->empresa->clientes();
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole($role)
+    {
+        if (is_string($role)) {
+            return $this->roles->contains('name', $role);
+        }
+        return !! $role->intersect($this->roles)->count();
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->roles->flatMap(function ($role) {
+            return $role->permissions;
+        })->pluck('name')->contains($permission);
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->hasRole('super-admin');
     }
 }

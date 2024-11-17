@@ -10,6 +10,7 @@ use App\Livewire\Empresa\EditarEmpresa;
 use App\Livewire\Task\TaskList;
 use App\Livewire\Task\TaskTemplateList;
 use App\Livewire\User\EditProfile;
+use App\Livewire\User\IndexUsers;
 use App\Livewire\Certificado\IndexCertificados;
 use App\Livewire\Dashboard\Index;
 
@@ -43,25 +44,32 @@ Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class,
 Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
 // Rotas do painel (protegidas por autenticação)
-Route::middleware(['auth'])->prefix('painel')->name('painel.')->group(function () {
-    // Dashboard
+Route::middleware(['auth', 'verified'])->prefix('painel')->name('painel.')->group(function () {
+    // Dashboard (acessível por todos os usuários autenticados)
     Route::get('/', \App\Livewire\Dashboard\Index::class)->name('dashboard');
 
-    // Perfil
+    // Perfil e Empresa (acessível por todos os usuários autenticados)
     Route::get('/perfil', EditProfile::class)->name('perfil.editar');
-    
-    // Empresa
-    Route::get('/empresa/editar', EditarEmpresa::class)->name('empresa.editar');
+    Route::get('/empresa', EditarEmpresa::class)->name('empresa.editar');
 
-    // Clientes
-    Route::get('/clientes', IndexClientes::class)->name('clientes.index');
-    Route::get('/clientes/novo', CreateCliente::class)->name('clientes.create');
-    Route::get('/clientes/editar/{clienteId}', EditCliente::class)->name('clientes.edit');
+    // Rotas que requerem super-admin
+    Route::middleware(['role:super-admin'])->prefix('gerencial')->name('gerencial.')->group(function () {
+        Route::get('/usuarios', \App\Livewire\User\IndexUsers::class)->name('usuarios.index');
+    });
 
-    // Certificados
-    Route::get('/certificados', IndexCertificados::class)->name('certificados.index');
+    // Clientes (acessível por super-admin e user)
+    Route::prefix('clientes')->name('clientes.')->group(function () {
+        Route::get('/', IndexClientes::class)->name('index');
+        Route::get('/create', CreateCliente::class)->name('create');
+        Route::get('/{cliente}/edit', EditCliente::class)->name('edit')->where('cliente', '[0-9]+');
+    });
 
-    // Tasks
+    // Certificados (acessível por super-admin e user)
+    Route::prefix('certificados')->name('certificados.')->group(function () {
+        Route::get('/', IndexCertificados::class)->name('index');
+    });
+
+    // Tarefas (acessível por super-admin e user)
     Route::get('/tarefas', TaskList::class)->name('tarefas.index');
     Route::get('/tarefas/modelos', TaskTemplateList::class)->name('tarefas.modelos.index');
 });

@@ -2,11 +2,12 @@
 
 namespace App\Livewire\Empresa;
 
+use App\Models\Empresa;
+use App\Models\Role;
 use App\Services\CnpjService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
-
 
 class EditarEmpresa extends Component
 {
@@ -26,7 +27,6 @@ class EditarEmpresa extends Component
     public $dadosCnpj;
 
     public $buscandoDados = false;
-
 
     protected $rules = [
         'nome' => 'required|min:3',
@@ -70,20 +70,37 @@ class EditarEmpresa extends Component
 
         $this->validate();
 
-        $this->empresa->update([
-            'nome' => $this->nome,
-            'razao_social' => $this->razao_social,
-            'cnpj' => preg_replace('/[^0-9]/', '', $this->cnpj),
-            'plano' => $this->plano,
-            'email' => $this->email,
-            'cep' => $this->cep,
-            'cidade' => $this->cidade,
-            'bairro' => $this->bairro,
-            'numero' => $this->numero,
-            'complemento' => $this->complemento,
-            'estado' => $this->estado,
-            'endereco' => $this->endereco,
-        ]);
+        $isNewEmpresa = !$this->empresa;
+
+        if (!$this->empresa) {
+            $this->empresa = new Empresa();
+        }
+
+        $this->empresa->nome = $this->nome;
+        $this->empresa->razao_social = $this->razao_social;
+        $this->empresa->cnpj = preg_replace('/[^0-9]/', '', $this->cnpj);
+        $this->empresa->plano = $this->plano;
+        $this->empresa->email = $this->email;
+        $this->empresa->cep = $this->cep;
+        $this->empresa->cidade = $this->cidade;
+        $this->empresa->bairro = $this->bairro;
+        $this->empresa->numero = $this->numero;
+        $this->empresa->complemento = $this->complemento;
+        $this->empresa->estado = $this->estado;
+        $this->empresa->endereco = $this->endereco;
+        $this->empresa->save();
+
+        $user = auth()->user();
+        $user->empresa_id = $this->empresa->id;
+        $user->save();
+
+        if ($isNewEmpresa) {
+            // Se é uma nova empresa, atribui o role de super-admin ao usuário
+            $superAdminRole = Role::where('name', 'super-admin')->first();
+            if ($superAdminRole) {
+                $user->roles()->sync([$superAdminRole->id]);
+            }
+        }
 
         //session()->flash('message', 'Empresa atualizada com sucesso!');
 
@@ -111,7 +128,7 @@ class EditarEmpresa extends Component
              $this->estado =  $this->dadosCnpj['address']['state'] ?? '';
              $this->cidade =  $this->dadosCnpj['address']['city'] ?? '';
              $this->email =  $this->dadosCnpj['emails']['0']['address'] ?? '';
-   
+
          $this->dispatch('showToast', 'Dados da empresa atualizados com sucesso!');
         }
         
