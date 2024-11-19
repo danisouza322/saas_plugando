@@ -4,6 +4,7 @@ namespace App\Livewire\Empresa;
 
 use App\Models\Empresa;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
@@ -46,6 +47,21 @@ class CadastroEmpresa extends Component
                 'password' => Hash::make($this->password),
                 'empresa_id' => $empresa->id,
             ]);
+
+            // Buscar a role super-admin
+            $superAdminRole = Role::where('name', 'super-admin')->first();
+            
+            // Se a role não existir, criar
+            if (!$superAdminRole) {
+                $superAdminRole = Role::create([
+                    'name' => 'super-admin',
+                    'display_name' => 'Super Administrador',
+                    'description' => 'Acesso total ao sistema'
+                ]);
+            }
+
+            // Atribuir a role super-admin ao usuário
+            $user->roles()->attach($superAdminRole->id);
 
             // Autenticar o usuário
             auth()->login($user);

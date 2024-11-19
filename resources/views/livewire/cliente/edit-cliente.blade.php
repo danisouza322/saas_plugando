@@ -10,9 +10,9 @@
                 <div class="live-preview">
                     <form wire:submit.prevent="save" class="row g-3">
                         <div class="col-md-4">
-                            <label for="cnpj" class="form-label">CNPJ:</label>
+                            <label for="cpf_cnpj" class="form-label">CNPJ:</label>
                             <div class="input-group">
-                                <input type="text" class="form-control border-dashed @error('cnpj') is-invalid @enderror" id="cnpj" wire:model="cnpj">
+                                <input type="text" class="form-control border-dashed @error('cpf_cnpj') is-invalid @enderror" id="cpf_cnpj" wire:model="cpf_cnpj">
                                 <button class="btn btn-outline-secondary" type="button" wire:click="buscarDadosCNPJ" wire:loading.attr="disabled" wire:target="buscarDadosCNPJ">
                                     <span wire:loading.remove wire:target="buscarDadosCNPJ">Buscar Dados</span>
                                     <span wire:loading wire:target="buscarDadosCNPJ">
@@ -21,7 +21,7 @@
                                     </span>
                                 </button>
                             </div>
-                            @error('cnpj')
+                            @error('cpf_cnpj')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

@@ -13,49 +13,33 @@ class Task extends Model
     protected $fillable = [
         'title',
         'description',
-        'assigned_to',
-        'created_by',
-        'empresa_id',
         'task_type_id',
         'cliente_id',
         'start_date',
         'due_date',
-        'completed_at',
-        'status',
         'priority',
+        'status',
         'estimated_minutes',
-        'spent_minutes',
         'budget',
-        'spent_amount',
         'location',
         'tags',
         'requires_approval',
-        'is_approved',
-        'approved_by',
-        'approved_at',
         'is_recurring',
         'recurrence_pattern',
         'recurrence_config',
-        'sla_minutes',
-        'sla_breached'
+        'empresa_id',
+        'created_by',
+        'ativo'
     ];
 
     protected $casts = [
-        'start_date' => 'datetime',
-        'due_date' => 'datetime',
-        'completed_at' => 'datetime',
-        'approved_at' => 'datetime',
-        'estimated_minutes' => 'integer',
-        'spent_minutes' => 'integer',
-        'budget' => 'decimal:2',
-        'spent_amount' => 'decimal:2',
+        'start_date' => 'date',
+        'due_date' => 'date',
         'tags' => 'array',
         'requires_approval' => 'boolean',
-        'is_approved' => 'boolean',
         'is_recurring' => 'boolean',
         'recurrence_config' => 'array',
-        'sla_minutes' => 'integer',
-        'sla_breached' => 'boolean'
+        'ativo' => 'boolean'
     ];
 
     protected $appends = [
@@ -67,9 +51,16 @@ class Task extends Model
     ];
 
     // Relacionamentos
-    public function empresa()
+    public function assignedUsers()
     {
-        return $this->belongsTo(Empresa::class);
+        return $this->belongsToMany(User::class, 'task_user', 'task_id', 'user_id')
+                    ->where('ativo', true)
+                    ->withTimestamps();
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
     public function type()
@@ -77,24 +68,14 @@ class Task extends Model
         return $this->belongsTo(TaskType::class, 'task_type_id');
     }
 
-    public function assignedTo()
-    {
-        return $this->belongsTo(User::class, 'assigned_to');
-    }
-
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function approvedBy()
+    public function attachments()
     {
-        return $this->belongsTo(User::class, 'approved_by');
-    }
-
-    public function cliente()
-    {
-        return $this->belongsTo(Cliente::class);
+        return $this->hasMany(TaskAttachment::class);
     }
 
     public function teamMembers()
@@ -114,11 +95,6 @@ class Task extends Model
         return $this->hasMany(TaskComment::class);
     }
 
-    public function attachments()
-    {
-        return $this->hasMany(TaskAttachment::class);
-    }
-
     public function history()
     {
         return $this->hasMany(TaskHistory::class);
@@ -127,43 +103,45 @@ class Task extends Model
     // Scopes
     public function scopeForEmpresa($query, $empresaId)
     {
-        return $query->where('empresa_id', $empresaId);
-    }
-
-    public function scopePending($query)
-    {
-        return $query->where('status', 'pending');
-    }
-
-    public function scopeInProgress($query)
-    {
-        return $query->where('status', 'in_progress');
+        return $query->where('empresa_id', $empresaId)
+                    ->where('ativo', true);
     }
 
     public function scopeCompleted($query)
     {
-        return $query->where('status', 'completed');
+        return $query->where('status', 'completed')
+                    ->where('ativo', true);
     }
 
-    public function scopeDelayed($query)
+    public function scopePending($query)
     {
-        return $query->where('status', 'delayed');
+        return $query->where('status', 'pending')
+                    ->where('ativo', true);
     }
 
-    public function scopeUrgent($query)
+    public function scopeInProgress($query)
     {
-        return $query->where('priority', 'urgent');
-    }
-
-    public function scopeRequiresApproval($query)
-    {
-        return $query->where('requires_approval', true);
+        return $query->where('status', 'in_progress')
+                    ->where('ativo', true);
     }
 
     public function scopeOverdue($query)
     {
         return $query->where('due_date', '<', now())
-                    ->whereNotIn('status', ['completed', 'cancelled']);
+                    ->whereNotIn('status', ['completed', 'cancelled'])
+                    ->where('ativo', true);
+    }
+
+    public function scopeUrgent($query)
+    {
+        return $query->where('priority', 'urgent')
+                    ->where('ativo', true);
+    }
+
+    public function scopeRequiresApproval($query)
+    {
+        return $query->where('requires_approval', true)
+                    ->where('ativo', true);
     }
 
     // Acessors e Mutators

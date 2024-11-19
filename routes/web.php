@@ -11,6 +11,8 @@ use App\Livewire\User\EditProfile;
 use App\Livewire\User\IndexUsers;
 use App\Livewire\Certificado\IndexCertificados;
 use App\Livewire\Dashboard\Index;
+use App\Livewire\Tasks\TaskList;
+use App\Livewire\Tasks\TaskView;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,18 +60,26 @@ Route::middleware(['auth', 'verified'])->prefix('painel')->name('painel.')->grou
     // Rotas que requerem super-admin
     Route::middleware(['role:super-admin'])->prefix('gerencial')->name('gerencial.')->group(function () {
         Route::get('/usuarios', \App\Livewire\User\IndexUsers::class)->name('usuarios.index');
+        // Rota de gerenciamento de empresas (apenas para usuário ID 1)
+        Route::get('/empresas', \App\Livewire\Admin\IndexEmpresas::class)->name('empresas.index');
     });
 
     // Clientes (acessível por super-admin e user)
-    Route::prefix('clientes')->name('clientes.')->group(function () {
+    Route::prefix('clientes')->name('clientes.')->middleware(['check.cliente'])->group(function () {
         Route::get('/', IndexClientes::class)->name('index');
         Route::get('/create', CreateCliente::class)->name('create');
         Route::get('/{cliente}/edit', EditCliente::class)->name('edit')->where('cliente', '[0-9]+');
     });
 
     // Certificados (acessível por super-admin e user)
-    Route::prefix('certificados')->name('certificados.')->group(function () {
+    Route::prefix('certificados')->name('certificados.')->middleware(['check.certificado'])->group(function () {
         Route::get('/', IndexCertificados::class)->name('index');
+    });
+
+    // Tarefas (acessível por super-admin e user)
+    Route::prefix('tasks')->name('tasks.')->middleware(['auth', 'verified'])->group(function () {
+        Route::get('/', TaskList::class)->name('index');
+        Route::get('/view/{taskId}', TaskView::class)->name('view');
     });
 
     // Rota catch-all (deve ser a última)

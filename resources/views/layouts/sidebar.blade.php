@@ -41,24 +41,6 @@
                     </a>
                 </li>
 
-                @if(auth()->user()->hasRole('super-admin'))
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarGerencial" data-bs-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="sidebarGerencial">
-                        <i class="ri-admin-line"></i> <span data-key="t-gerencial">Gerencial</span>
-                    </a>
-                    <div class="collapse menu-dropdown" id="sidebarGerencial">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="{{ route('painel.gerencial.usuarios.index') }}" class="nav-link">
-                                    Usuários
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                @endif
-
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ request()->routeIs('painel.clientes.*') ? 'active' : '' }}" 
                         href="{{ route('painel.clientes.index') }}" 
@@ -76,6 +58,40 @@
                         <span data-key="t-certificados">Certificados</span>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ request()->routeIs('painel.tasks.*') ? 'active' : '' }}" 
+                        href="{{ route('painel.tasks.index') }}" 
+                        aria-expanded="false">
+                        <i class="ri-task-line"></i> 
+                        <span data-key="t-tasks">Tarefas</span>
+                    </a>
+                </li>
+
+                @if(auth()->user()->hasRole('super-admin'))
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarGerencial" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarGerencial">
+                        <i class="ri-admin-line"></i> <span data-key="t-gerencial">Gerencial</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarGerencial">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('painel.gerencial.usuarios.index') }}" class="nav-link">
+                                    Usuários
+                                </a>
+                            </li>
+                            @if(auth()->id() === 1)
+                            <li class="nav-item">
+                                <a href="{{ route('painel.gerencial.empresas.index') }}" class="nav-link">
+                                    Empresas
+                                </a>
+                            </li>
+                            @endif
+                        </ul>
+                    </div>
+                </li>
+                @endif
 
                 <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.pages')</span></li>
 

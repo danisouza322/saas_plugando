@@ -200,39 +200,53 @@ class TaskView extends Component
                 'title' => $this->title,
                 'description' => $this->description,
                 'task_type_id' => $this->taskType,
-                'assigned_to' => $this->assignedTo,
                 'cliente_id' => $this->cliente,
-                'start_date' => $this->startDate,
-                'due_date' => $this->dueDate,
-                'priority' => $this->priority,
+                'assigned_to' => $this->assignedTo,
                 'status' => $this->status,
-                'estimated_minutes' => $this->estimatedMinutes,
-                'budget' => $this->budget,
+                'priority' => $this->priority,
+                'due_date' => $this->dueDate,
                 'location' => $this->location,
-                'tags' => $this->tags,
-                'requires_approval' => $this->requiresApproval,
-                'is_recurring' => $this->isRecurring,
-                'recurrence_pattern' => $this->recurrencePattern,
-                'recurrence_config' => $this->recurrenceConfig,
             ]);
 
-            TaskHistory::logChange(
-                $this->task->id,
-                auth()->id(),
-                'update',
-                'Tarefa atualizada'
-            );
+            // Registra a alteração no histórico
+            TaskHistory::create([
+                'task_id' => $this->task->id,
+                'user_id' => auth()->id(),
+                'action_type' => 'update',
+                'description' => 'Tarefa atualizada'
+            ]);
 
-            session()->flash('success', 'Tarefa atualizada com sucesso!');
-            return redirect()->route('painel.tasks.view', ['taskId' => $this->taskId]);
+            // Dispara apenas um evento
+            $this->js('
+                Toastify({
+                    text: "Tarefa atualizada com sucesso!",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "#4CAF50",
+                    },
+                }).showToast();
+            ');
 
         } catch (\Exception $e) {
-            logger()->error('Erro ao atualizar tarefa', [
-                'task_id' => $this->taskId,
-                'error' => $e->getMessage()
+            logger()->error('Erro ao salvar tarefa', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
-
-            session()->flash('error', 'Erro ao atualizar tarefa: ' . $e->getMessage());
+            
+            // Dispara apenas um evento de erro
+            $this->js('
+                Toastify({
+                    text: "Erro ao salvar tarefa: ' . addslashes($e->getMessage()) . '",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "#F44336",
+                    },
+                }).showToast();
+            ');
         }
     }
 

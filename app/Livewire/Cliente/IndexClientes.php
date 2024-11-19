@@ -75,7 +75,7 @@ class IndexClientes extends Component
         ->when($this->search, function($query) {
             $query->where(function($query){
                 $query->where('razao_social', 'like', '%'.$this->search.'%')
-                      ->orWhere('cnpj', 'like', '%'.$this->search.'%')
+                      ->orWhere('cpf_cnpj', 'like', '%'.$this->search.'%')
                       ->orWhere('regime_tributario', 'like', '%'.$this->search.'%')
                       ->orWhereHas('inscricoesEstaduais', function($q){
                           $q->where('numero', 'like', '%'.$this->search.'%');
@@ -92,4 +92,3 @@ class IndexClientes extends Component
         ]);
     }
 }
-

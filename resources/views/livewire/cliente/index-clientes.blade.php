@@ -74,7 +74,7 @@
                                                 @forelse($clientes as $cliente)
                                                 <tr>
                                                     <td>{{ $cliente->razao_social }}</td>
-                                                    <td>{{ $cliente->cnpj }}</td>
+                                                    <td>{{ $cliente->cpf_cnpj }}</td>
                                                     <td>{{ $cliente->inscricaoEstadualAtiva->numero ?? 'Insento/Inativo' }}</td>
                                                     <td>{{ $cliente->regime_tributario_label }}</td>
                                                     <td>

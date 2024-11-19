@@ -11,6 +11,7 @@
 <script src="{{ URL::asset('build/js/pages/profile-setting.init.js') }}"></script>
 <script src="{{ URL::asset('build/js/clientes.js') }}"></script>
 <script src="{{ URL::asset('build/js/certificados.js') }}"></script>
+<script src="{{ URL::asset('build/js/tasks.js') }}"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
 <!-- Sweet Alerts js -->

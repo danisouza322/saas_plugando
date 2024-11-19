@@ -6,7 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "guzzlehttp/guzzle": "^7.2",
+        "doctrine/dbal": "^4.2",
+        "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
@@ -57,7 +58,11 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true

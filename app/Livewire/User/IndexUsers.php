@@ -25,6 +25,7 @@ class IndexUsers extends Component
     public $editingUser = null;
     public $isEditing = false;
     public $roles;
+    public $userId;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -50,6 +51,7 @@ class IndexUsers extends Component
         $this->selectedRole = '';
         $this->editingUser = null;
         $this->isEditing = false;
+        $this->userId = null;
     }
 
     public function store()
@@ -95,7 +97,7 @@ class IndexUsers extends Component
         $this->selectedRole = $user->roles->first()->id ?? null;
         $this->isEditing = true;
 
-        $this->dispatch('show-modal');
+        $this->dispatch('showModal');
     }
 
     public function update()
@@ -159,6 +161,12 @@ class IndexUsers extends Component
     {
         $users = User::where('empresa_id', auth()->user()->empresa_id)
             ->where('id', '!=', auth()->id())
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('email', 'like', '%' . $this->search . '%');
+                });
+            })
             ->with('roles')
             ->paginate(10);
 

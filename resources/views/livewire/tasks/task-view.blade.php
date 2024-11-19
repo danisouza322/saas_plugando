@@ -113,81 +113,127 @@
                                         <h6 class="mb-3 fw-semibold text-uppercase">Descrição</h6>
                                         <p>{{ $description }}</p>
 
-                                        @if($task->created_at || $dueDate)
-                                            <div class="pt-3 border-top border-top-dashed mt-4">
+                                        @if($task->start_date || $dueDate)
+                                            <div class="pt-3">
                                                 <div class="row">
-                                                    
-                                                    @if($task->created_at)
-                                                        <div class="col-lg">
-                                                            <h6 class="mb-1">Data de Início:</h6>
-                                                            <div class="text-muted">{{ $task->created_at->format('d/m/Y') }}</div>
+                                                    @if($task->start_date)
+                                                        <div class="col-6">
+                                                            <div class="d-flex">
+                                                                <div class="flex-shrink-0 me-2">
+                                                                    <i class="ri-calendar-todo-line fs-15 text-muted"></i>
+                                                                </div>
+                                                                <div class="flex-grow-1">
+                                                                    <h6 class="mb-0">Data de Início</h6>
+                                                                    <p class="text-muted mb-0">{{ \Carbon\Carbon::parse($task->start_date)->format('d/m/Y') }}</p>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     @endif
-                                                    
                                                     @if($dueDate)
-                                                        <div class="col-lg">
-                                                            <h6 class="mb-1">Data Limite:</h6>
-                                                            <div class="text-muted">{{ \Carbon\Carbon::parse($dueDate)->format('d/m/Y') }}</div>
+                                                        <div class="col-6">
+                                                            <div class="d-flex">
+                                                                <div class="flex-shrink-0 me-2">
+                                                                    <i class="ri-calendar-check-line fs-15 text-muted"></i>
+                                                                </div>
+                                                                <div class="flex-grow-1">
+                                                                    <h6 class="mb-0">Data Limite</h6>
+                                                                    <p class="text-muted mb-0">{{ \Carbon\Carbon::parse($dueDate)->format('d/m/Y') }}</p>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     @endif
-                                                    
                                                 </div>
                                             </div>
                                         @endif
+
+                                        <div class="pt-3">
+                                            <div class="row">
+                                                <div class="col-lg-3 col-sm-6">
+                                                    <div class="mb-3">
+                                                        <h6 class="mb-2">Status:</h6>
+                                                        <select class="form-select" wire:model="status">
+                                                            <option value="pending">🕒 Pendente</option>
+                                                            <option value="in_progress">▶️ Em Andamento</option>
+                                                            <option value="completed">✅ Concluída</option>
+                                                            <option value="delayed">⚠️ Atrasada</option>
+                                                            <option value="cancelled">❌ Cancelada</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3 col-sm-6">
+                                                    <div class="mb-3">
+                                                        <h6 class="mb-2">Prioridade:</h6>
+                                                        <select class="form-select" wire:model="priority">
+                                                            <option value="low">🟢 Baixa</option>
+                                                            <option value="medium">🟡 Média</option>
+                                                            <option value="high">🟠 Alta</option>
+                                                            <option value="urgent">🔴 Urgente</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3 col-sm-6">
+                                                    <div class="mb-3">
+                                                        <h6 class="mb-2">Tipo de Tarefa:</h6>
+                                                        <select class="form-select" wire:model="taskType">
+                                                            @foreach($taskTypes as $type)
+                                                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3 col-sm-6">
+                                                    <div class="mb-3">
+                                                        <h6 class="mb-2">Cliente:</h6>
+                                                        <select class="form-select" wire:model="clienteId">
+                                                            <option value="">Selecione um cliente</option>
+                                                            @foreach($clientes as $cliente)
+                                                                <option value="{{ $cliente->id }}">{{ $cliente->razao_social }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <h6 class="mb-2">Usuários Designados:</h6>
+                                                        <select class="form-select" wire:model="assignedTo" multiple>
+                                                            @foreach($users as $user)
+                                                                <option value="{{ $user['id'] }}">{{ $user['name'] }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="mb-3">
+                                                        <h6 class="mb-2">Tempo Estimado (minutos):</h6>
+                                                        <input type="number" class="form-control" wire:model="estimatedMinutes">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="mb-3">
+                                                        <h6 class="mb-2">Orçamento (R$):</h6>
+                                                        <input type="number" step="0.01" class="form-control" wire:model="budget">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-6 col-md-4">
-                                            <div class="mb-3">
-                                                <h6 class="mb-1">Data Limite:</h6>
-                                                <input type="date" class="form-control" wire:model="dueDate">
-                                            </div>
+                                    <div class="card mt-4">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0">Comentários</h5>
                                         </div>
-                                        <div class="col-6 col-md-4">
-                                            <div class="mb-3">
-                                                <h6 class="mb-1">Status:</h6>
-                                                <select class="form-select" wire:model="status">
-                                                    <option value="pending">🕒 Pendente</option>
-                                                    <option value="in_progress">▶️ Em Andamento</option>
-                                                    <option value="completed">✅ Concluída</option>
-                                                    <option value="delayed">⚠️ Atrasada</option>
-                                                    <option value="cancelled">❌ Cancelada</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4">
-                                            <div class="mb-3">
-                                                <h6 class="mb-1">Prioridade:</h6>
-                                                <select class="form-select" wire:model="priority">
-                                                    <option value="low">🟢 Baixa</option>
-                                                    <option value="medium">🟡 Média</option>
-                                                    <option value="high">🟠 Alta</option>
-                                                    <option value="urgent">🔴 Urgente</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4">
-                                            <div class="mb-3">
-                                                <h6 class="mb-1">Tempo Estimado (min):</h6>
-                                                <input type="number" class="form-control" wire:model="estimatedMinutes">
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4">
-                                            <div class="mb-3">
-                                                <h6 class="mb-1">Orçamento:</h6>
-                                                <input type="number" step="0.01" class="form-control" wire:model="budget">
-                                            </div>
+                                        <div class="card-body">
+                                            <div>Em desenvolvimento...</div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="card-title mb-0">Comentários</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div>Em desenvolvimento...</div>
                                 </div>
                             </div>
                         </div>
@@ -198,34 +244,6 @@
                                     <h5 class="card-title mb-0">Detalhes da Tarefa</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="mb-3">
-                                        <h6 class="mb-1">Cliente:</h6>
-                                        <div class="form-control-plaintext">
-                                            {{ $task->cliente?->razao_social }}
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <h6 class="mb-1">Tipo de Tarefa:</h6>
-                                        <select class="form-select" wire:model="taskType">
-                                            <option value="">Selecione o Tipo</option>
-                                            @foreach($taskTypes as $type)
-                                                <option value="{{ $type['id'] }}" @selected($taskType == $type['id'])>
-                                                    {{ $type['name'] }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <h6 class="mb-1">Responsável:</h6>
-                                        <select class="form-select" wire:model="assignedTo">
-                                            <option value="">Selecione o Responsável</option>
-                                            @foreach($users as $user)
-                                                <option value="{{ $user['id'] }}" @selected($assignedTo == $user['id'])>
-                                                    {{ $user['name'] }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
                                     <div class="mb-3">
                                         <h6 class="mb-1">Localização:</h6>
                                         <input type="text" class="form-control" wire:model="location">

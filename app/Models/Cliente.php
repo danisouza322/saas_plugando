@@ -12,9 +12,12 @@ class Cliente extends Model
     protected $fillable = [
         'empresa_id',
         'nome',
-        'cnpj',
-        'cpf',
         'razao_social',
+        'cpf_cnpj',
+        'email',
+        'telefone',
+        'celular',
+        'observacoes',
         'nome_fantasia',
         'regime_tributario',
         'atividadesEconomicas',
@@ -25,7 +28,16 @@ class Cliente extends Model
         'tipo',
         'situacao_cadastral',
         'simples',
-        'mei'
+        'mei',
+        'ativo'
+    ];
+
+    protected $casts = [
+        'data_abertura' => 'date',
+        'capital_social' => 'float',
+        'simples' => 'boolean',
+        'mei' => 'boolean',
+        'ativo' => 'boolean'
     ];
 
     public function empresa()

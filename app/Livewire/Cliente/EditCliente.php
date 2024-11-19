@@ -18,7 +18,7 @@ class EditCliente extends Component
     public $clienteId;
 
     public $razao_social;
-    public $cnpj;
+    public $cpf_cnpj;
     public $inscricao_estadual;
     public $regime_tributario;
     public $porte;
@@ -43,7 +43,7 @@ class EditCliente extends Component
 
     protected $rules = [
         'razao_social' => 'required|string',
-        'cnpj' => 'required|cnpj|unique:clientes,cnpj,{{clienteId}}', // Ignorando o cliente atual na verificação de unicidade
+        'cpf_cnpj' => 'required|string|unique:clientes,cpf_cnpj,{{clienteId}}',
         'regime_tributario' => 'required',
         // Outras regras de validação...
     ];
@@ -53,11 +53,15 @@ class EditCliente extends Component
         $this->clienteId = $cliente;
 
         $cliente = Cliente::with(['inscricoesEstaduais', 'endereco'])->findOrFail($this->clienteId);
+        
+        // Verifica se o cliente pertence à empresa do usuário logado
+        if ($cliente->empresa_id !== Auth::user()->empresa_id) {
+            abort(403, 'Você não tem permissão para editar este cliente.');
+        }
 
-        //dd($cliente);
-
+        // Dados básicos do cliente
         $this->razao_social = $cliente->razao_social;
-        $this->cnpj = $cliente->cnpj;
+        $this->cpf_cnpj = $cliente->cpf_cnpj;
         $this->inscricao_estadual = $cliente->inscricao_estadual;
         $this->regime_tributario = $cliente->regime_tributario;
         $this->porte = $cliente->porte;
@@ -65,17 +69,20 @@ class EditCliente extends Component
         $this->atividadesEconomicas = $cliente->atividadesEconomicas;
         $this->simples = $cliente->simples;
         $this->mei = $cliente->mei;
-        $this->cep = $cliente->endereco->cep;
-        $this->rua = $cliente->endereco->rua;
-        $this->numero = $cliente->endereco->numero;
-        $this->bairro = $cliente->endereco->bairro;
-        $this->complemento = $cliente->endereco->complemento;
-        $this->cidade = $cliente->endereco->cidade;
-        $this->estado = $cliente->endereco->estado;
-       // $this->municipio_ibge = $cliente->endereco->municipio_ibge;
         $this->email = $cliente->email;
         $this->telefone = $cliente->telefone;
         $this->celular = $cliente->celular;
+
+        // Dados do endereço
+        if ($cliente->endereco) {
+            $this->cep = $cliente->endereco->cep;
+            $this->rua = $cliente->endereco->rua;
+            $this->numero = $cliente->endereco->numero;
+            $this->bairro = $cliente->endereco->bairro;
+            $this->complemento = $cliente->endereco->complemento;
+            $this->cidade = $cliente->endereco->cidade;
+            $this->estado = $cliente->endereco->estado;
+        }
 
         // Carregar as inscrições estaduais
         $this->inscricoesEstaduais = $cliente->inscricoesEstaduais->map(function ($inscricao) {
@@ -94,7 +101,7 @@ class EditCliente extends Component
     {
         $this->buscandoDados = true;
 
-        $this->dadosCnpj = $cnpjService->buscarDadosCnpj($this->cnpj);
+        $this->dadosCnpj = $cnpjService->buscarDadosCnpj($this->cpf_cnpj);
 
         if (isset($this->dadosCnpj['error'])) {
             session()->flash('error', $this->dadosCnpj['error']);
@@ -175,7 +182,7 @@ class EditCliente extends Component
         $this->validate([
             // Suas regras de validação
             'razao_social' => 'required|string',
-           // 'cnpj' => 'required|cnpj|unique:clientes,cnpj,' . $this->clienteId,
+           // 'cpf_cnpj' => 'required|string|unique:clientes,cpf_cnpj,' . $this->clienteId,
             'regime_tributario' => 'required',
             // Outras regras...
         ]);
@@ -186,25 +193,31 @@ class EditCliente extends Component
         // Atualizar os dados do cliente
         $cliente->update([
             'razao_social' => $this->razao_social,
-            'cnpj' => $this->cnpj,
+            'cpf_cnpj' => $this->cpf_cnpj,
             'inscricao_estadual' => $this->inscricao_estadual,
             'regime_tributario' => $this->regime_tributario,
             'porte' => $this->porte,
             'natureza_juridica' => $this->natureza_juridica,
             'simples' => $this->simples,
             'mei' => $this->mei,
-            'cep' => $this->cep,
-            'rua' => $this->rua,
-            'numero' => $this->numero,
-            'bairro' => $this->bairro,
-            'complemento' => $this->complemento,
-            'estado' => $this->estado,
-            'cidade' => $this->cidade,
             'email' => $this->email,
             'telefone' => $this->telefone,
             'celular' => $this->celular,
         ]);
 
+        // Atualizar ou criar o endereço
+        $cliente->endereco()->updateOrCreate(
+            ['cliente_id' => $cliente->id],
+            [
+                'cep' => $this->cep,
+                'rua' => $this->rua,
+                'numero' => $this->numero,
+                'bairro' => $this->bairro,
+                'complemento' => $this->complemento,
+                'estado' => $this->estado,
+                'cidade' => $this->cidade
+            ]
+        );
 
         // Atualizar as inscrições estaduais
         // Excluir as inscrições atuais

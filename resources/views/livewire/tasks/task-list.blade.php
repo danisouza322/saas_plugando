@@ -14,19 +14,24 @@
                 </div>
 
                 <div class="card-body border border-dashed border-end-0 border-start-0">
-                    <div class="row g-3">
-                        <div class="col-xxl-5 col-sm-12">
+                    <div class="row g-3 mb-4">
+                        <!-- Busca -->
+                        <div class="col-xxl-3 col-sm-12">
                             <div class="search-box">
-                                <input type="text" class="form-control search" wire:model.debounce.300ms="search"
-                                    placeholder="Buscar por título ou descrição...">
+                                <input type="text" 
+                                       class="form-control search" 
+                                       wire:model.live.debounce.300ms="search"
+                                       placeholder="Buscar por título ou descrição...">
                                 <i class="ri-search-line search-icon"></i>
                             </div>
                         </div>
 
-                        <div class="col-xxl-3 col-sm-4">
+                        <!-- Filtro por Status -->
+                        <div class="col-xxl-2 col-sm-4">
                             <div>
-                                <select class="form-control" wire:model="status">
-                                    <option value="">Selecione o Status</option>
+                                <label for="status_filter" class="form-label">Status</label>
+                                <select wire:model.live="status" id="status_filter" class="form-select">
+                                    <option value="">Todos</option>
                                     <option value="pending">Pendente</option>
                                     <option value="in_progress">Em Andamento</option>
                                     <option value="completed">Concluída</option>
@@ -36,10 +41,12 @@
                             </div>
                         </div>
 
-                        <div class="col-xxl-3 col-sm-4">
+                        <!-- Filtro por Prioridade -->
+                        <div class="col-xxl-2 col-sm-4">
                             <div>
-                                <select class="form-control" wire:model="priority">
-                                    <option value="">Selecione a Prioridade</option>
+                                <label for="priority_filter" class="form-label">Prioridade</label>
+                                <select wire:model.live="priority" id="priority_filter" class="form-select">
+                                    <option value="">Todas</option>
                                     <option value="low">Baixa</option>
                                     <option value="medium">Média</option>
                                     <option value="high">Alta</option>
@@ -48,14 +55,33 @@
                             </div>
                         </div>
 
-                        <div class="col-xxl-1 col-sm-4">
+                        <!-- Filtro por Tipo -->
+                        <div class="col-xxl-2 col-sm-4">
                             <div>
-                                <button type="button" class="btn btn-primary w-100" wire:click="$refresh">
-                                    <i class="ri-equalizer-fill me-1 align-bottom"></i> Filtrar
-                                </button>
+                                <label for="taskType_filter" class="form-label">Tipo</label>
+                                <select wire:model.live="taskType" id="taskType_filter" class="form-select">
+                                    <option value="">Todos</option>
+                                    @foreach($taskTypes as $type)
+                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Filtro por Usuário -->
+                        <div class="col-xxl-3 col-sm-4">
+                            <div>
+                                <label for="assignedTo_filter" class="form-label">Responsável</label>
+                                <select wire:model.live="assignedTo" id="assignedTo_filter" class="form-select">
+                                    <option value="">Todos</option>
+                                    @foreach($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="card-body">
@@ -63,10 +89,9 @@
                         <table class="table align-middle table-nowrap mb-0" id="tasksTable">
                             <thead class="table-light text-muted">
                                 <tr>
-                                    <th class="sort" wire:click="sortBy('id')">#ID</th>
                                     <th class="sort" wire:click="sortBy('title')">Tarefa</th>
                                     <th class="sort" wire:click="sortBy('cliente_id')">Cliente</th>
-                                    <th class="sort" wire:click="sortBy('assigned_to')">Responsável</th>
+                                    <th class="sort" wire:click="sortBy('assigned_to')">Responsáveis</th>
                                     <th class="sort" wire:click="sortBy('due_date')">Data Limite</th>
                                     <th class="sort" wire:click="sortBy('status')">Status</th>
                                     <th class="sort" wire:click="sortBy('priority')">Prioridade</th>
@@ -76,12 +101,11 @@
                             <tbody>
                                 @forelse($tasks as $task)
                                     <tr>
-                                        <td>{{ $task->id }}</td>
                                         <td>
                                             <div class="d-flex">
                                                 <div class="flex-grow-1">
                                                     <h5 class="fs-14 mb-1">
-                                                        <a href="#" class="text-dark">{{ $task->title }}</a>
+                                                        <a href="{{ route('painel.tasks.view', ['taskId' => $task->id]) }}" class="text-dark">{{ $task->title }}</a>
                                                     </h5>
                                                     <p class="text-muted mb-0">
                                                         {{ Str::limit($task->description, 50) }}
@@ -91,20 +115,12 @@
                                         </td>
                                         <td>{{ $task->cliente ? $task->cliente->razao_social : 'N/A' }}</td>
                                         <td>
-                                            <div class="avatar-group">
-                                                @if($task->assignedTo)
-                                                    <a href="javascript: void(0);" class="avatar-group-item"
-                                                        data-bs-toggle="tooltip" data-bs-trigger="hover"
-                                                        data-bs-placement="top" title="{{ $task->assignedTo->name }}">
-                                                        <div class="avatar-xs">
-                                                            <span class="avatar-title rounded-circle bg-primary">
-                                                                {{ substr($task->assignedTo->name, 0, 1) }}
-                                                            </span>
-                                                        </div>
-                                                    </a>
-                                                @else
-                                                    <span class="badge bg-light text-muted">Não atribuído</span>
-                                                @endif
+                                            <div class="d-flex flex-wrap gap-1">
+                                                @forelse($task->assignedUsers as $user)
+                                                    <span class="badge bg-info">{{ $user->name }}</span>
+                                                @empty
+                                                    <span class="text-muted">Sem responsável</span>
+                                                @endforelse
                                             </div>
                                         </td>
                                         <td>{{ $task->due_date ? $task->due_date->format('d/m/Y') : 'N/A' }}</td>
@@ -148,31 +164,22 @@
                                             @endswitch
                                         </td>
                                         <td>
-                                            <div class="dropdown">
-                                                <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownTask{{ $task->id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots"></i>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('painel.tasks.view', ['taskId' => $task->id]) }}" 
+                                                   class="btn btn-sm btn-primary" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Editar">
+                                                    <i class="ri-edit-2-line"></i>
+                                                </a>
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-danger" 
+                                                        onclick="if(confirm('Tem certeza que deseja excluir esta tarefa?')) { @this.deleteTask({{ $task->id }}) }"
+                                                        data-bs-toggle="tooltip" 
+                                                        data-bs-placement="top" 
+                                                        title="Excluir">
+                                                    <i class="ri-delete-bin-line"></i>
                                                 </button>
-                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownTask{{ $task->id }}">
-                                                    <li>
-                                                        <a href="{{ route('painel.tasks.view', ['taskId' => $task->id]) }}" class="dropdown-item">
-                                                            <i class="bi bi-eye me-2"></i> Visualizar
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ route('painel.tasks.view', ['taskId' => $task->id]) }}" class="dropdown-item">
-                                                            <i class="bi bi-pencil me-2"></i> Editar
-                                                        </a>
-                                                    </li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li>
-                                                        <button type="button" class="dropdown-item text-danger" 
-                                                            wire:click="deleteTask({{ $task->id }})"
-                                                            wire:loading.attr="disabled"
-                                                            onclick="return confirm('Tem certeza que deseja excluir esta tarefa?')">
-                                                            <i class="bi bi-trash me-2"></i> Excluir
-                                                        </button>
-                                                    </li>
-                                                </ul>
                                             </div>
                                         </td>
                                     </tr>
@@ -274,4 +281,28 @@
     </div>
 
     @livewire('tasks.task-modal')
+
+    @if (session()->has('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @push('scripts')
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            // Livewire.on('confirmDelete', (data) => {
+            //     if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
+            //         Livewire.dispatch('deleteTask', { taskId: data.taskId });
+            //     }
+            // });
+        });
+    </script>
+    @endpush
 </div>

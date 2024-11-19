@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class CreateCliente extends Component
 {
     public $razao_social;
-    public $cnpj;
+    public $cpf_cnpj;
     public $nome_fantasia;
     public $regime_tributario;
     public $atividadesEconomicas;
@@ -41,12 +41,11 @@ class CreateCliente extends Component
 
 
     public $buscandoDados = false;
-   
 
 
     protected $rules = [
         'razao_social' => 'required|string|max:255',
-        'cnpj' => 'required|string|max:18|unique:clientes,cnpj',
+        'cpf_cnpj' => 'required|string|max:18|unique:clientes,cpf_cnpj',
         'regime_tributario' => 'nullable',
         'data_abertura' => 'nullable|date',
         'porte' => 'nullable|string|max:50',
@@ -71,7 +70,7 @@ class CreateCliente extends Component
         $cliente = Cliente::create([
             'empresa_id' => Auth::user()->empresa_id,
             'razao_social' => $this->razao_social,
-            'cnpj' => $this->cnpj,
+            'cpf_cnpj' => $this->cpf_cnpj,
             'nome_fantasia' => $this->nome_fantasia,
             'regime_tributario' => $this->regime_tributario,
             'atividadesEconomicas' => $this->atividadesEconomicas,
@@ -116,7 +115,7 @@ class CreateCliente extends Component
     public function buscarDadosCNPJ(CnpjService $cnpjService)
     {
 
-        $this->dadosCnpj = $cnpjService->buscarDadosCnpj($this->cnpj);
+        $this->dadosCnpj = $cnpjService->buscarDadosCnpj($this->cpf_cnpj);
 
         //dd($this->dadosCnpj);
 
@@ -200,4 +199,3 @@ class CreateCliente extends Component
         ->layout('layouts.app');
     }
 }
-

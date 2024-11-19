@@ -17,13 +17,13 @@ class TaskType extends Model
         'description',
         'color',
         'requires_approval',
-        'active',
+        'ativo',
         'empresa_id'
     ];
 
     protected $casts = [
         'requires_approval' => 'boolean',
-        'active' => 'boolean'
+        'ativo' => 'boolean'
     ];
 
     // Relacionamentos

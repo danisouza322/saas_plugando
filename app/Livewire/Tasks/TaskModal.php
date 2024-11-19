@@ -26,9 +26,8 @@ class TaskModal extends Component
     public $title;
     public $description;
     public $taskType;
-    public $assignedTo;
+    public $selectedUsers = [];  // Array para armazenar os IDs dos usuários selecionados
     public $cliente;
-    public $startDate;
     public $dueDate;
     public $priority = 'medium';
     public $status = 'pending';
@@ -41,17 +40,43 @@ class TaskModal extends Component
     public $recurrencePattern;
     public $recurrenceConfig;
     public $attachments = [];
-    public $teamMembers = [];
 
     // Dados para os selects
-    protected $clientes;
-    protected $users;
+    public $clientes;
+    public $users;
+
+    protected $rules = [
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'taskType' => 'required|exists:task_types,id',
+        'selectedUsers' => 'nullable|array',
+        'selectedUsers.*' => 'exists:users,id',
+        'cliente' => 'nullable|exists:clientes,id',
+        'dueDate' => 'nullable|date',
+        'priority' => 'required|in:low,medium,high',
+        'status' => 'required|in:pending,in_progress,completed,delayed,cancelled',
+        'estimatedMinutes' => 'nullable|integer|min:1',
+        'budget' => 'nullable|numeric|min:0',
+        'location' => 'nullable|string|max:255',
+        'tags' => 'nullable|array',
+        'tags.*' => 'string|max:50',
+        'requiresApproval' => 'boolean',
+        'isRecurring' => 'boolean',
+        'recurrencePattern' => 'nullable|string|max:50',
+        'recurrenceConfig' => 'nullable|array'
+    ];
 
     public function mount()
     {
+        $this->initializeFields();
+        $this->loadData();
+    }
+
+    private function initializeFields()
+    {
         $this->status = 'pending';
         $this->priority = 'medium';
-        $this->loadData();
+        $this->selectedUsers = [];
     }
 
     protected function getListeners()
@@ -63,41 +88,22 @@ class TaskModal extends Component
         ];
     }
 
-    protected function rules()
-    {
-        return [
-            'title' => 'required|min:3',
-            'description' => 'nullable',
-            'taskType' => 'required|exists:task_types,id',
-            'assignedTo' => 'nullable|exists:users,id',
-            'cliente' => 'nullable|exists:clientes,id',
-            'startDate' => 'nullable|date',
-            'dueDate' => 'nullable|date|after_or_equal:startDate',
-            'priority' => 'required|in:low,medium,high,urgent',
-            'status' => 'required|in:pending,in_progress,completed,delayed,cancelled',
-            'estimatedMinutes' => 'nullable|integer|min:0',
-            'budget' => 'nullable|numeric|min:0',
-            'location' => 'nullable|string',
-            'tags' => 'nullable|array',
-            'requiresApproval' => 'boolean',
-            'isRecurring' => 'boolean',
-            'recurrencePattern' => 'nullable|required_if:isRecurring,true',
-            'recurrenceConfig' => 'nullable',
-            'attachments.*' => 'nullable|file|max:10240', // 10MB max
-            'teamMembers' => 'nullable|array',
-            'teamMembers.*' => 'exists:users,id'
-        ];
-    }
-
     public function init()
     {
         $this->loadData();
     }
 
-    public function updated($field)
+    public function updated($propertyName)
     {
-        logger()->info('Campo atualizado', ['field' => $field, 'value' => $this->$field]);
-        $this->validateOnly($field);
+        $this->validateOnly($propertyName);
+        $this->ensureSelectedUsersArray();
+    }
+
+    private function ensureSelectedUsersArray()
+    {
+        if (!is_array($this->selectedUsers)) {
+            $this->selectedUsers = [];
+        }
     }
 
     public function hydrate()
@@ -118,73 +124,72 @@ class TaskModal extends Component
     {
         try {
             $empresaId = Session::get('empresa_id');
-            if (!$empresaId) {
-                logger()->error('Empresa ID não encontrado na sessão');
-                $this->clientes = collect([]);
-                $this->users = collect([]);
-                return;
-            }
-
-            if (!empty($this->clientes) && !empty($this->users)) {
-                return; // Já tem dados carregados
-            }
-
-            logger()->info('Carregando dados com empresa_id: ' . $empresaId);
-
-            $this->clientes = Cliente::where('empresa_id', $empresaId)
-                                   ->orderBy('nome')
-                                   ->get();
-                                   
+            
+            // Carrega usuários exceto o usuário logado
             $this->users = User::where('empresa_id', $empresaId)
                               ->where('ativo', true)
-                              ->orderBy('name')
+                              ->where('id', '!=', Auth::id())
                               ->get();
-
-            logger()->info('Dados carregados com sucesso', [
-                'empresa_id' => $empresaId,
-                'total_clientes' => $this->clientes->count(),
-                'total_users' => $this->users->count()
+            
+            logger()->info('Usuários carregados:', [
+                'count' => $this->users->count(),
+                'empresa_id' => $empresaId
             ]);
+            
+            $this->clientes = Cliente::where('empresa_id', $empresaId)
+                                   ->where('ativo', true)
+                                   ->get();
+                                   
+            logger()->info('Clientes carregados:', [
+                'count' => $this->clientes->count(),
+                'empresa_id' => $empresaId
+            ]);
+                                   
         } catch (\Exception $e) {
-            logger()->error('Erro ao carregar dados: ' . $e->getMessage());
-            $this->clientes = collect([]);
+            logger()->error('Erro ao carregar dados:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             $this->users = collect([]);
+            $this->clientes = collect([]);
         }
     }
 
-    #[On('show-task-modal')]
     public function showModal($data = [])
     {
-        logger()->info('showModal chamado', $data);
+        $this->reset(['taskId', 'title', 'description', 'taskType', 'selectedUsers', 'cliente', 'dueDate', 
+                     'priority', 'status', 'estimatedMinutes', 'budget', 'location', 'tags', 
+                     'requiresApproval', 'isRecurring', 'recurrencePattern', 'recurrenceConfig', 
+                     'attachments', 'viewOnly']);
         
-        $this->loadData();
-        $this->resetValidation();
+        // Define valores padrão após o reset
+        $this->status = 'pending';
+        $this->priority = 'medium';
         
-        if (isset($data['taskId'])) {
-            $this->loadTask($data['taskId']);
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
+                if (property_exists($this, $key)) {
+                    $this->$key = $value;
+                }
+            }
         }
-        
-        $this->viewOnly = isset($data['mode']) && $data['mode'] === 'view';
-        $this->showModal = true;
-        
-        $this->dispatch('open-modal', 'taskModal');
+
+        $this->dispatch('show-task-modal');
     }
 
-    protected function loadTask($taskId)
+    public function loadTask($taskId)
     {
         try {
-            $task = Task::with(['cliente', 'assignedTo', 'type'])
-                       ->where('empresa_id', Session::get('empresa_id'))
-                       ->findOrFail($taskId);
-
+            $task = Task::with(['assignedUsers', 'cliente'])->findOrFail($taskId);
+            
             $this->taskId = $task->id;
             $this->title = $task->title;
             $this->description = $task->description;
             $this->taskType = $task->task_type_id;
-            $this->assignedTo = $task->assigned_to;
+            $this->selectedUsers = $task->assignedUsers->pluck('id')->toArray();
             $this->cliente = $task->cliente_id;
-            $this->startDate = $task->start_date?->format('Y-m-d');
-            $this->dueDate = $task->due_date?->format('Y-m-d');
+            $this->dueDate = $task->due_date;
             $this->priority = $task->priority;
             $this->status = $task->status;
             $this->estimatedMinutes = $task->estimated_minutes;
@@ -195,19 +200,13 @@ class TaskModal extends Component
             $this->isRecurring = $task->is_recurring;
             $this->recurrencePattern = $task->recurrence_pattern;
             $this->recurrenceConfig = $task->recurrence_config;
-
-            logger()->info('Tarefa carregada com sucesso', ['task_id' => $taskId]);
-
+            
         } catch (\Exception $e) {
-            logger()->error('Erro ao carregar tarefa', [
-                'task_id' => $taskId,
-                'error' => $e->getMessage()
+            logger()->error('Erro ao carregar tarefa:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
-
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Erro ao carregar tarefa: ' . $e->getMessage()
-            ]);
+            $this->dispatch('showToast', 'error', 'Erro ao carregar tarefa');
         }
     }
 
@@ -219,9 +218,8 @@ class TaskModal extends Component
         $this->title = $this->task->title;
         $this->description = $this->task->description;
         $this->taskType = $this->task->task_type_id;
-        $this->assignedTo = $this->task->assigned_to;
+        $this->selectedUsers = $this->task->assignedUsers->pluck('id')->toArray();
         $this->cliente = $this->task->cliente_id;
-        $this->startDate = $this->task->start_date;
         $this->dueDate = $this->task->due_date;
         $this->priority = $this->task->priority;
         $this->status = $this->task->status;
@@ -233,146 +231,71 @@ class TaskModal extends Component
         $this->isRecurring = $this->task->is_recurring;
         $this->recurrencePattern = $this->task->recurrence_pattern;
         $this->recurrenceConfig = $this->task->recurrence_config;
-        $this->teamMembers = $this->task->teamMembers->pluck('id')->toArray();
 
         $this->showModal = true;
     }
 
     public function save()
     {
-        logger()->info('Iniciando save da tarefa', [
-            'request' => request()->all(),
-            'dados' => [
-                'title' => $this->title,
-                'cliente_id' => $this->cliente,
-                'assigned_to' => $this->assignedTo,
-                'task_type_id' => $this->taskType,
-                'empresa_id' => Session::get('empresa_id')
-            ]
-        ]);
-
         try {
-            $validatedData = $this->validate([
-                'title' => 'required|min:3',
-                'description' => 'nullable',
-                'taskType' => 'required|exists:task_types,id',
-                'assignedTo' => 'nullable|exists:users,id',
-                'cliente' => 'nullable|exists:clientes,id',
-                'startDate' => 'nullable|date',
-                'dueDate' => 'nullable|date|after_or_equal:startDate',
-                'priority' => 'required|in:low,medium,high,urgent',
-                'status' => 'required|in:pending,in_progress,completed,delayed,cancelled',
-                'estimatedMinutes' => 'nullable|integer|min:0',
-                'budget' => 'nullable|numeric|min:0',
-                'location' => 'nullable|string',
-                'tags' => 'nullable|array',
-                'requiresApproval' => 'boolean',
-                'isRecurring' => 'boolean',
-                'recurrencePattern' => 'nullable|required_if:isRecurring,true',
-                'recurrenceConfig' => 'nullable'
-            ]);
-
-            logger()->info('Dados validados com sucesso', $validatedData);
+            $this->validate();
 
             DB::beginTransaction();
 
-            try {
-                $data = [
-                    'title' => $this->title,
-                    'description' => $this->description,
-                    'task_type_id' => $this->taskType,
-                    'assigned_to' => $this->assignedTo,
-                    'cliente_id' => $this->cliente,
-                    'start_date' => $this->startDate,
-                    'due_date' => $this->dueDate,
-                    'priority' => $this->priority,
-                    'status' => $this->status,
-                    'estimated_minutes' => $this->estimatedMinutes,
-                    'budget' => $this->budget,
-                    'location' => $this->location,
-                    'tags' => $this->tags,
-                    'requires_approval' => $this->requiresApproval,
-                    'is_recurring' => $this->isRecurring,
-                    'recurrence_pattern' => $this->recurrencePattern,
-                    'recurrence_config' => $this->recurrenceConfig,
-                    'empresa_id' => Session::get('empresa_id'),
-                    'created_by' => Auth::id()
-                ];
+            $taskData = [
+                'title' => $this->title,
+                'description' => $this->description,
+                'task_type_id' => $this->taskType,
+                'cliente_id' => $this->cliente,
+                'due_date' => $this->dueDate,
+                'priority' => $this->priority,
+                'status' => $this->status,
+                'estimated_minutes' => $this->estimatedMinutes,
+                'budget' => $this->budget,
+                'location' => $this->location,
+                'tags' => $this->tags,
+                'requires_approval' => $this->requiresApproval,
+                'is_recurring' => $this->isRecurring,
+                'recurrence_pattern' => $this->recurrencePattern,
+                'recurrence_config' => $this->recurrenceConfig,
+                'empresa_id' => Session::get('empresa_id'),
+                'created_by' => Auth::id(),
+                'ativo' => true,
+                'start_date' => now() // Adicionando a data atual como data de início
+            ];
 
-                logger()->info('Dados preparados para salvar', $data);
-
-                if (!$this->taskId) {
-                    logger()->info('Criando nova tarefa');
-                    $task = Task::create($data);
-                    logger()->info('Nova tarefa criada', ['task_id' => $task->id]);
-                } else {
-                    logger()->info('Atualizando tarefa existente', ['task_id' => $this->taskId]);
-                    $task = Task::findOrFail($this->taskId);
-                    $task->update($data);
-                    logger()->info('Tarefa atualizada com sucesso');
-                }
-
-                // Salvar anexos
-                if ($this->attachments) {
-                    foreach ($this->attachments as $attachment) {
-                        $filename = $attachment->store('task-attachments');
-                        $task->attachments()->create([
-                            'user_id' => Auth::id(),
-                            'filename' => basename($filename),
-                            'original_filename' => $attachment->getClientOriginalName(),
-                            'mime_type' => $attachment->getMimeType(),
-                            'size' => $attachment->getSize()
-                        ]);
-                    }
-                }
-
-                // Atualizar membros da equipe
-                if ($this->teamMembers) {
-                    $task->teamMembers()->sync($this->teamMembers);
-                }
-
-                // Registrar histórico
-                $task->logHistory(
-                    Auth::id(),
-                    $this->taskId ? 'update' : 'create',
-                    $this->taskId ? 'Tarefa atualizada' : 'Tarefa criada',
-                    $this->taskId ? 'Tarefa atualizada por ' . Auth::user()->name : 'Tarefa criada por ' . Auth::user()->name
-                );
-
-                DB::commit();
-
-                logger()->info('Tarefa salva com sucesso', ['task_id' => $task->id]);
-                
-                $this->dispatch('task-saved');
-                $this->hideModal();
-                
-                // Emitir evento de notificação
-                $this->dispatch('notify', [
-                    'type' => 'success',
-                    'message' => $this->taskId ? 'Tarefa atualizada com sucesso!' : 'Tarefa criada com sucesso!'
-                ]);
-
-                // Atualizar a lista de tarefas
-                $this->dispatch('refresh-tasks');
-                
-            } catch (\Exception $e) {
-                DB::rollBack();
-                throw $e;
+            if ($this->taskId) {
+                $task = Task::findOrFail($this->taskId);
+                // Remove start_date do array se for uma atualização
+                unset($taskData['start_date']);
+                $task->update($taskData);
+            } else {
+                $task = Task::create($taskData);
             }
+
+            // Sincroniza os usuários designados
+            $task->assignedUsers()->sync($this->selectedUsers ?: []);
+
+            DB::commit();
+
+            // Limpa o formulário
+            $this->clearForm();
             
+            // Dispara eventos para atualizar a interface
+            $this->dispatch('task-saved');
+            $this->dispatch('refresh-tasks');
+            $this->dispatch('showToast', 'success', 'Tarefa salva com sucesso!');
+            
+            // Fecha o modal via JavaScript
+            $this->dispatch('close-task-modal');
+
         } catch (\Exception $e) {
-            logger()->error('Erro ao salvar tarefa: ' . $e->getMessage(), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
+            DB::rollBack();
+            logger()->error('Erro ao salvar tarefa:', [
+                'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => 'Erro ao salvar tarefa: ' . $e->getMessage()
-            ]);
-
-            throw $e;
+            $this->dispatch('showToast', 'error', 'Erro ao salvar tarefa');
         }
     }
 
@@ -383,10 +306,31 @@ class TaskModal extends Component
         $this->resetValidation();
         $this->reset([
             'taskId', 'title', 'description', 'status', 'priority', 
-            'dueDate', 'cliente', 'assignedTo', 'taskType',
-            'startDate', 'estimatedMinutes', 'budget', 'location',
+            'dueDate', 'cliente', 'selectedUsers', 'taskType',
+            'estimatedMinutes', 'budget', 'location',
             'tags', 'requiresApproval', 'isRecurring',
             'recurrencePattern', 'recurrenceConfig'
+        ]);
+    }
+
+    public function clearForm()
+    {
+        $this->initializeFields();
+        $this->reset([
+            'taskId',
+            'title',
+            'description',
+            'taskType',
+            'cliente',
+            'dueDate',
+            'estimatedMinutes',
+            'budget',
+            'location',
+            'tags',
+            'requiresApproval',
+            'isRecurring',
+            'recurrencePattern',
+            'recurrenceConfig'
         ]);
     }
 
@@ -421,7 +365,7 @@ class TaskModal extends Component
 
             return view('livewire.tasks.task-modal', [
                 'taskTypes' => TaskType::where('empresa_id', Session::get('empresa_id'))
-                                    ->where('active', true)
+                                    ->where('ativo', true)
                                     ->get(),
                 'clientes' => $this->clientes ?: collect([]),
                 'users' => $this->users ?: collect([])
@@ -436,3 +380,6 @@ class TaskModal extends Component
         }
     }
 }
+
+// Removendo o relacionamento duplicado no modelo Task
+// Não há mais o relacionamento duplicado no modelo Task
