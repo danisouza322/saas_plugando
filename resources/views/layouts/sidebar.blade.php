@@ -59,15 +59,6 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link menu-link {{ request()->routeIs('painel.tasks.*') ? 'active' : '' }}" 
-                        href="{{ route('painel.tasks.index') }}" 
-                        aria-expanded="false">
-                        <i class="ri-task-line"></i> 
-                        <span data-key="t-tasks">Tarefas</span>
-                    </a>
-                </li>
-
                 @if(auth()->user()->hasRole('super-admin'))
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarGerencial" data-bs-toggle="collapse" role="button"

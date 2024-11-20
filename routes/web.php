@@ -11,8 +11,6 @@ use App\Livewire\User\EditProfile;
 use App\Livewire\User\IndexUsers;
 use App\Livewire\Certificado\IndexCertificados;
 use App\Livewire\Dashboard\Index;
-use App\Livewire\Tasks\TaskList;
-use App\Livewire\Tasks\TaskView;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,12 +72,6 @@ Route::middleware(['auth', 'verified'])->prefix('painel')->name('painel.')->grou
     // Certificados (acessível por super-admin e user)
     Route::prefix('certificados')->name('certificados.')->middleware(['check.certificado'])->group(function () {
         Route::get('/', IndexCertificados::class)->name('index');
-    });
-
-    // Tarefas (acessível por super-admin e user)
-    Route::prefix('tasks')->name('tasks.')->middleware(['auth', 'verified'])->group(function () {
-        Route::get('/', TaskList::class)->name('index');
-        Route::get('/view/{taskId}', TaskView::class)->name('view');
     });
 
     // Rota catch-all (deve ser a última)
