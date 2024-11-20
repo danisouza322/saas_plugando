@@ -83,7 +83,7 @@ class IndexClientes extends Component
             });
         })
         ->orderBy($this->sortField, $this->sortDirection)
-        ->paginate(3);
+        ->paginate(10);
 
         return view('livewire.cliente.index-clientes', [
             'clientes' => $clientes,

@@ -56,10 +56,27 @@ class Index extends Component
         $totalClientes = $this->getTotalClientes();
         $totalCertificados = $this->getTotalCertificados();
 
+        // Buscar os últimos 5 clientes
+        $ultimosClientes = Cliente::where('empresa_id', Auth::user()->empresa_id)
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        // Buscar os últimos 5 certificados
+        $ultimosCertificados = Certificado::where('empresa_id', Auth::user()->empresa_id)
+            ->with('cliente') // Carrega o relacionamento com cliente
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
         return view('livewire.dashboard.index', [
             'totalClientes' => $totalClientes,
             'totalCertificados' => $totalCertificados,
             'certificadosPorMes' => $this->certificadosPorMes,
-        ])->layout('layouts.app');;
+            'ultimosClientes' => $ultimosClientes,
+            'ultimosCertificados' => $ultimosCertificados,
+        ])->layout('layouts.app', [
+            'titulo' => $this->titulo
+        ]);
     }
 }
