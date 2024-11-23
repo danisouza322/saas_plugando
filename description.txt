@@ -1,0 +1,99 @@
+# SAAS Plugando - Documentação do Projeto
+
+## Stack Tecnológica
+- Laravel 11.0
+- PHP 8.2+
+- Livewire 3.5 (Para componentes dinâmicos)
+- Theme Velzon (Template Admin)
+- Bootstrap 5
+- MySQL/MariaDB
+
+## Estrutura do Projeto
+
+### Autenticação e Autorização
+- Sistema multi-tenant com empresas
+- Autenticação usando Laravel Auth
+- Sistema de roles e permissions
+- Roles principais: super-admin, admin, user
+
+### Módulos Principais
+
+1. Dashboard
+   - Visão geral do sistema
+   - Estatísticas e métricas principais
+
+2. Gestão de Empresas
+   - Cadastro e edição de empresas
+   - Campos principais:
+     * Nome
+     * Razão Social
+     * CNPJ
+     * Email
+     * Telefone
+     * Endereço completo
+     * Status (ativo/inativo)
+
+3. Gestão de Clientes
+   - CRUD completo de clientes
+   - Vinculação com empresa
+   - Campos principais:
+     * Dados pessoais
+     * Documentos
+     * Endereço
+     * Atividades econômicas
+
+4. Gestão de Certificados
+   - Gerenciamento de certificados digitais
+   - Vinculação com clientes
+
+5. Área Administrativa
+   - Gerenciamento de usuários
+   - Configurações do sistema
+   - Disponível apenas para super-admin
+
+## Funcionalidades Removidas
+- Sistema de planos e assinaturas
+- Sistema de cobranças
+- Integração com Asaas
+- Webhooks de pagamento
+
+## Diretórios Principais
+- /app/Http/Livewire - Componentes Livewire
+- /app/Models - Modelos do sistema
+- /resources/views - Views Blade
+- /database/migrations - Migrações do banco
+- /routes - Rotas do sistema
+
+## Rotas Principais
+- /painel/dashboard - Dashboard principal
+- /painel/clientes - Gestão de clientes
+- /painel/certificados - Gestão de certificados
+- /painel/gerencial/* - Área administrativa
+
+## Banco de Dados
+### Tabelas Principais
+- users
+- empresas
+- clientes
+- certificados
+- roles
+- permissions
+
+## Customizações
+- Interface traduzida para português
+- Theme Velzon customizado
+- Sidebar simplificada
+- Sistema de navegação intuitivo
+
+## Próximos Passos Sugeridos
+1. Implementar testes automatizados
+2. Melhorar documentação do código
+3. Implementar sistema de logs
+4. Adicionar mais validações de dados
+5. Melhorar UX/UI do sistema
+
+## Observações
+- Sistema em desenvolvimento ativo
+- Foco em simplicidade e usabilidade
+- Remoção bem-sucedida do sistema de pagamentos
+- Preparado para futuras expansões

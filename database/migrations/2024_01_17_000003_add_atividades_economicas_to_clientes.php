@@ -15,7 +15,10 @@ return new class extends Migration
             $table->text('atividadesEconomicas')->nullable()->after('regime_tributario');
         });
     }
-    
+
+    /**
+     * Reverse the migrations.
+     */
     public function down()
     {
         Schema::table('clientes', function (Blueprint $table) {

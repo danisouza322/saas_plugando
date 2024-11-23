@@ -10,7 +10,8 @@ use App\Livewire\Empresa\EditarEmpresa;
 use App\Livewire\User\EditProfile;
 use App\Livewire\User\IndexUsers;
 use App\Livewire\Certificado\IndexCertificados;
-use App\Livewire\Dashboard\Index;
+use App\Livewire\Dashboard\Index as DashboardIndex;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,11 +50,11 @@ Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class
 // Rotas do painel (protegidas por autenticação)
 Route::middleware(['auth', 'verified'])->prefix('painel')->name('painel.')->group(function () {
     // Dashboard (acessível por todos os usuários autenticados)
-    Route::get('/', \App\Livewire\Dashboard\Index::class)->name('dashboard');
+    Route::get('/', DashboardIndex::class)->name('dashboard');
 
     // Perfil e Empresa (acessível por todos os usuários autenticados)
     Route::get('/perfil', EditProfile::class)->name('perfil.editar');
-    Route::get('/empresa', EditarEmpresa::class)->name('empresa.editar');
+    Route::get('/empresa/editar', EditarEmpresa::class)->name('empresa.editar');
 
     // Rotas que requerem super-admin
     Route::middleware(['role:super-admin'])->prefix('gerencial')->name('gerencial.')->group(function () {
@@ -73,9 +74,6 @@ Route::middleware(['auth', 'verified'])->prefix('painel')->name('painel.')->grou
     Route::prefix('certificados')->name('certificados.')->middleware(['check.certificado'])->group(function () {
         Route::get('/', IndexCertificados::class)->name('index');
     });
-
-    // Rota catch-all (deve ser a última)
-    Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index')->where('any', '.*');
 });
 
 // Rota catch-all (deve ser a última)

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use App\Http\Livewire\Empresa\ValidacaoDados;
 use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
@@ -26,7 +28,11 @@ class AppServiceProvider extends ServiceProvider
     {
         // Registrar o UserObserver
         \App\Models\User::observe(\App\Observers\UserObserver::class);
+        
+        // Registrar componentes Livewire
+        Livewire::component('empresa.validacao-dados', ValidacaoDados::class);
+        Livewire::component('empresa.dados-empresa', \App\Http\Livewire\Empresa\DadosEmpresa::class);
+        
         Schema::defaultStringLength(191);
-
     }
 }

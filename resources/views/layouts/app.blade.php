@@ -1,7 +1,7 @@
 @extends('layouts.master')
 <!-- CSS e outros links -->
 @section('title')
-{{ $titulo ?? 'Dashaboard' }}
+{{ $titulo ?? 'Dashboard' }}
 @endsection
 @section('content')
 {{ $slot }}

@@ -42,8 +42,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            'throttle:api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -65,6 +64,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'assinatura' => \App\Http\Middleware\CheckAssinatura::class,
     ];
 
     /**
@@ -91,5 +91,6 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\CheckRole::class,
         'check.cliente' => \App\Http\Middleware\CheckClienteAccess::class,
         'check.certificado' => \App\Http\Middleware\CheckCertificadoAccess::class,
+        'validate.company' => \App\Http\Middleware\ValidateCompanyData::class,
     ];
 }

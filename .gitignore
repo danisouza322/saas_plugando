@@ -22,3 +22,13 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 /storage/framework/views/*.php
+
+# Template examples directory
+/master/
+storage/*.key
+.env
+Homestead.yaml
+Homestead.json
+/.vagrant
+.phpunit.result.cache
+/storage/framework/views/*.php

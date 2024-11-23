@@ -3,16 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Empresa extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
-        'nome', 
-        'data_inicio_plano', 
-        'plano', 
-        'razao_social', 
+        'nome',
+        'razao_social',
         'cnpj',
         'email',
+        'telefone',
         'cep',
         'endereco',
         'bairro',
@@ -24,8 +26,7 @@ class Empresa extends Model
     ];
 
     protected $casts = [
-        'ativo' => 'boolean',
-        'data_inicio_plano' => 'datetime'
+        'ativo' => 'boolean'
     ];
 
     public function users()

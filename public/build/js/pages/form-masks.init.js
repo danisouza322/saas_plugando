@@ -74,23 +74,32 @@ if (document.querySelector("#cleave-prefix")) {
     });
 }
 
-if (document.querySelector("#cleave-phone")) {
-    var cleaveBlocks = new Cleave('#cleave-phone', {
-        delimiters: ['(', ')', '-'],
-        blocks: [0, 3, 3, 4]
+if (document.querySelector("#telefone")) {
+    var cleavePhone = new Cleave('#telefone', {
+        delimiters: ['(', ')', ' ', '-'],
+        blocks: [0, 2, 5, 4],
+        numericOnly: true
     });
 }
 
 if (document.querySelector("#cnpj")) {
-    var cleaveBlocks = new Cleave('#cnpj', {
+    var cleaveCnpj = new Cleave('#cnpj', {
         delimiters: ['.', '.', '/', '-'],
         blocks: [2, 3, 3, 4, 2],
         numericOnly: true
     });
 }
 
+if (document.querySelector("#cep")) {
+    var cleaveCep = new Cleave('#cep', {
+        delimiters: ['-'],
+        blocks: [5, 3],
+        numericOnly: true
+    });
+}
+
 if (document.querySelector("#cpf_cnpj")) {
-    var cleaveBlocks = new Cleave('#cpf_cnpj', {
+    var cleaveCpfCnpj = new Cleave('#cpf_cnpj', {
         delimiters: ['.', '.', '/', '-'],
         blocks: [2, 3, 3, 4, 2],
         numericOnly: true

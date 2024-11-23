@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AsaasWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Webhook Asaas (sem autenticação)
+Route::match(['get', 'post'], 'webhook/asaas', [AsaasWebhookController::class, 'handle'])
+    ->middleware(['api'])
+    ->withoutMiddleware([
+        \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        \App\Http\Middleware\VerifyCsrfToken::class,
+        \Illuminate\Auth\Middleware\Authenticate::class
+    ]);
+
+// Rotas que precisam de autenticação
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });
