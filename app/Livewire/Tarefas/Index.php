@@ -20,17 +20,32 @@ class Index extends Component
     public $search = '';
     public $statusFilter = '';
     public $tarefaId = null;
+    public $showAllTasks = false;
 
     protected $listeners = ['tarefaUpdated' => '$refresh'];
 
-    public function toggleStatus($tarefaId)
+    public function mount()
+    {
+        // Se o usuário for admin ou tiver permissão específica, permite ver todas as tarefas
+        $this->showAllTasks = Auth::user()->hasRole('admin') || Auth::user()->can('view_all_tasks');
+    }
+
+    public function toggleStatus($id)
     {
         try {
             $tarefa = Tarefa::where('empresa_id', Auth::user()->empresa_id)
-                           ->findOrFail($tarefaId);
+                           ->findOrFail($id);
             
             $tarefa->status = $tarefa->status === 'concluido' ? 'novo' : 'concluido';
             $tarefa->save();
+
+            // Força a atualização da coleção de tarefas
+            $this->tarefas = $this->tarefas->map(function ($t) use ($tarefa) {
+                if ($t->id === $tarefa->id) {
+                    return $tarefa->fresh();
+                }
+                return $t;
+            });
 
             $this->dispatch('showToast', [
                 'message' => 'Status da tarefa atualizado com sucesso!',
@@ -39,7 +54,7 @@ class Index extends Component
         } catch (\Exception $e) {
             logger()->error('Erro ao atualizar status da tarefa:', [
                 'error' => $e->getMessage(),
-                'tarefa_id' => $tarefaId
+                'tarefa_id' => $id
             ]);
             
             $this->dispatch('showToast', [
@@ -112,14 +127,29 @@ class Index extends Component
         }
     }
 
+    public function toggleViewAll()
+    {
+        $this->showAllTasks = !$this->showAllTasks;
+    }
+
     public function render()
     {
         $query = Tarefa::where('empresa_id', Auth::user()->empresa_id);
+        
+        if (!$this->showAllTasks) {
+            $query->whereHas('responsaveis', function($q) {
+                $q->where('user_id', Auth::id());
+            });
+        }
 
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('titulo', 'like', '%' . $this->search . '%')
-                  ->orWhere('descricao', 'like', '%' . $this->search . '%');
+                  ->orWhere('descricao', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('cliente', function($q) {
+                      $q->where('nome_fantasia', 'like', '%' . $this->search . '%')
+                        ->orWhere('razao_social', 'like', '%' . $this->search . '%');
+                  });
             });
         }
 

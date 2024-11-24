@@ -33,6 +33,7 @@ class TarefaModal extends Component
         'tarefa.cliente_id' => 'required|exists:clientes,id',
         'tarefa.descricao' => 'required',
         'tarefa.prioridade' => 'required|in:baixa,media,alta',
+        'tarefa.status' => 'required|in:novo,em_andamento,pendente,concluido',
         'tarefa.data_vencimento' => 'required|date',
         'responsaveis' => 'required|array|min:1',
         'arquivos.*' => 'nullable|file|max:10240', // máximo 10MB
@@ -46,6 +47,8 @@ class TarefaModal extends Component
         'tarefa.descricao.required' => 'A descrição é obrigatória',
         'tarefa.prioridade.required' => 'A prioridade é obrigatória',
         'tarefa.prioridade.in' => 'Prioridade inválida',
+        'tarefa.status.required' => 'O status é obrigatório',
+        'tarefa.status.in' => 'Status inválido',
         'tarefa.data_vencimento.required' => 'A data de vencimento é obrigatória',
         'tarefa.data_vencimento.date' => 'Data de vencimento inválida',
         'responsaveis.required' => 'Selecione pelo menos um responsável',
@@ -116,6 +119,7 @@ class TarefaModal extends Component
                 'descricao' => $tarefa->descricao,
                 'prioridade' => $tarefa->prioridade,
                 'data_vencimento' => $tarefa->data_vencimento->format('Y-m-d'),
+                'status' => $tarefa->status,
                 'criado_por' => $tarefa->criado_por
             ];
             $this->responsaveis = $tarefa->responsaveis->pluck('id')->toArray();
