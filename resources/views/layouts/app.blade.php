@@ -7,10 +7,12 @@
 {{ $slot }}
 @endsection
 @section('script')
+//<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="{{ URL::asset('build/js/app.js') }}"></script>
 <script src="{{ URL::asset('build/js/pages/profile-setting.init.js') }}"></script>
 <script src="{{ URL::asset('build/js/clientes.js') }}"></script>
 <script src="{{ URL::asset('build/js/certificados.js') }}"></script>
+<script src="{{ URL::asset('build/js/tarefas.js') }}"></script>
 <script src="{{ URL::asset('build/js/tasks.js') }}"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
@@ -33,20 +35,8 @@
                 }
             });
 
-            Livewire.on('showToast', (message) => {
-                Toastify({
-                    text: message,
-                    duration: 3000,
-                    close: true,
-                    gravity: "top", // `top` or `bottom`
-                    position: "right", // `left`, `center` or `right`
-                    stopOnFocus: true, // Prevents dismissing of toast on hover
-                    style: {
-                        background: "linear-gradient(to right, #00b09b, #96c93d)",
-                    },
-                }).showToast();
-            });
-
+            // Removendo o listener showToast daqui para evitar duplicação
+            
             Livewire.on('avatarUpdated', (avatarUrl) => {
                 console.log('Evento avatarUpdated recebido:', avatarUrl); // Log para depuração
 

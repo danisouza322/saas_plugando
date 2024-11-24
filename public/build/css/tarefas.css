@@ -1,0 +1,209 @@
+/* Estilos personalizados para o sistema de tarefas */
+
+/* Status das tarefas */
+.status-novo { background-color: #e9ecef !important; }
+.status-em_andamento { background-color: #fff3cd !important; }
+.status-pendente { background-color: #cff4fc !important; }
+.status-concluido { background-color: #d1e7dd !important; }
+
+/* Prioridades */
+.prioridade-baixa { background-color: #d1e7dd !important; }
+.prioridade-media { background-color: #fff3cd !important; }
+.prioridade-alta { background-color: #f8d7da !important; }
+
+/* Avatar group personalizado */
+.avatar-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.avatar-group .avatar-xs {
+    width: 2rem;
+    height: 2rem;
+    position: relative;
+}
+
+.avatar-group .avatar-xs img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+
+/* Estilo para o modal */
+.modal-header.bg-success-subtle {
+    background-color: rgba(10, 179, 156, 0.18) !important;
+}
+
+.modal-backdrop {
+    z-index: 1050;
+}
+
+.modal {
+    z-index: 1055;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal-open {
+    overflow: hidden;
+    padding-right: 0 !important;
+}
+
+.modal-dialog {
+    margin: 1.75rem auto;
+    max-width: 800px;
+}
+
+.modal.fade .modal-dialog {
+    transform: translate(0, -50px);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: none;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.modal-backdrop.fade {
+    opacity: 0;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5;
+}
+
+/* Remove qualquer backdrop residual */
+body:not(.modal-open) .modal-backdrop {
+    display: none !important;
+}
+
+/* Garante que o backdrop seja removido corretamente */
+.modal-backdrop.fade.show {
+    z-index: 1050;
+}
+
+/* Evita flickering durante a transição */
+.modal, .modal-backdrop {
+    will-change: opacity;
+}
+
+/* Garante que o modal some completamente */
+.modal.fade:not(.show) {
+    display: none !important;
+}
+
+/* Estilo para o sidebar */
+.file-manager-sidebar {
+    min-width: 280px;
+    max-width: 280px;
+    height: calc(100vh - 180px);
+}
+
+.todo-content {
+    height: calc(100vh - 380px);
+    overflow-y: auto;
+}
+
+/* Responsividade */
+@media (max-width: 991.98px) {
+    .file-manager-sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        z-index: 1050;
+        background-color: var(--vz-secondary-bg);
+        transition: all 0.3s;
+    }
+
+    .file-manager-sidebar.show {
+        left: 0;
+    }
+}
+
+/* Animações */
+.todo-task {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo para o drag and drop */
+.draggable-task {
+    cursor: move;
+    user-select: none;
+}
+
+.drag-over {
+    border: 2px dashed var(--vz-primary) !important;
+    opacity: 0.5;
+}
+
+/* Estilo para os arquivos */
+.file-preview {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: var(--vz-light);
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.file-preview i {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.file-preview .file-info {
+    flex: 1;
+}
+
+.file-preview .file-size {
+    font-size: 0.875rem;
+    color: var(--vz-gray-600);
+}
+
+/* Estilo para o loading */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+}

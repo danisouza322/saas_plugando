@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\URL;
 
 class User extends Authenticatable
 {
@@ -45,6 +46,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'ativo' => 'boolean'
+    ];
+
+    protected $appends = [
+        'profile_photo_url',
     ];
 
     public function empresa()
@@ -99,5 +104,14 @@ class User extends Authenticatable
     public function isSuperAdmin()
     {
         return $this->hasRole('super-admin');
+    }
+
+    protected function getProfilePhotoUrlAttribute()
+    {
+        if ($this->avatar) {
+            return URL::asset('storage/' . $this->avatar);
+        }
+        
+        return URL::asset('build/images/users/avatar-1.jpg');
     }
 }

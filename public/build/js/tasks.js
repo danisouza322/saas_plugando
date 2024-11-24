@@ -15,17 +15,6 @@ document.addEventListener('livewire:initialized', () => {
     // Listener para quando a tarefa for salva
     Livewire.on('task-saved', () => {
         taskModal.hide();
-        // Mostrar mensagem de sucesso
-        Toastify({
-            text: "Tarefa salva com sucesso!",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "right",
-            stopOnFocus: true,
-            style: {
-                background: "linear-gradient(to right, #00b09b, #96c93d)",
-            },
-        }).showToast();
+        // A notificação será tratada pelo tarefas.js
     });
 });

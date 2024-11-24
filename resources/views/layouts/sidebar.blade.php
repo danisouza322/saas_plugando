@@ -55,6 +55,14 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ request()->routeIs('painel.tarefas.*') ? 'active' : '' }}"
+                        href="{{ route('painel.tarefas.index') }}">
+                        <i class="ri-task-line"></i>
+                        <span>Tarefas</span>
+                    </a>
+                </li>
+
                 @if(auth()->user()->hasRole('super-admin'))
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarGerencial" data-bs-toggle="collapse" role="button"

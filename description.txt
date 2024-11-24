@@ -7,6 +7,8 @@
 - Theme Velzon (Template Admin)
 - Bootstrap 5
 - MySQL/MariaDB
+- SweetAlert2 (Para notificações)
+- Select2 (Para selects avançados)
 
 ## Estrutura do Projeto
 
@@ -46,7 +48,26 @@
    - Gerenciamento de certificados digitais
    - Vinculação com clientes
 
-5. Área Administrativa
+5. Gestão de Tarefas
+   - CRUD completo de tarefas
+   - Vinculação com clientes e responsáveis
+   - Upload e gerenciamento de arquivos
+   - Sistema de notificações
+   - Campos principais:
+     * Título
+     * Descrição
+     * Cliente
+     * Responsáveis
+     * Status
+     * Arquivos anexos
+   - Funcionalidades:
+     * Criação/edição via modal
+     * Exclusão com confirmação
+     * Upload de múltiplos arquivos
+     * Notificações em tempo real
+     * Filtros de busca
+
+6. Área Administrativa
    - Gerenciamento de usuários
    - Configurações do sistema
    - Disponível apenas para super-admin
@@ -63,11 +84,13 @@
 - /resources/views - Views Blade
 - /database/migrations - Migrações do banco
 - /routes - Rotas do sistema
+- /public/build/js - Scripts JavaScript personalizados
 
 ## Rotas Principais
 - /painel/dashboard - Dashboard principal
 - /painel/clientes - Gestão de clientes
 - /painel/certificados - Gestão de certificados
+- /painel/tarefas - Gestão de tarefas
 - /painel/gerencial/* - Área administrativa
 
 ## Banco de Dados
@@ -76,6 +99,8 @@
 - empresas
 - clientes
 - certificados
+- tarefas
+- tarefa_arquivos
 - roles
 - permissions
 
@@ -84,16 +109,33 @@
 - Theme Velzon customizado
 - Sidebar simplificada
 - Sistema de navegação intuitivo
+- Notificações personalizadas com SweetAlert2
+- Selects avançados com Select2
+
+## Implementações Recentes
+1. Módulo de Tarefas
+   - Componente Livewire para listagem (Index.php)
+   - Componente modal para criação/edição
+   - Sistema de upload de arquivos
+   - Integração com SweetAlert2 para notificações
+   - Correção de bugs no sistema de exclusão
+   - Melhorias na UX com confirmações e feedback
+   - Logging detalhado para debugging
 
 ## Próximos Passos Sugeridos
 1. Implementar testes automatizados
 2. Melhorar documentação do código
-3. Implementar sistema de logs
+3. Implementar sistema de logs avançado
 4. Adicionar mais validações de dados
 5. Melhorar UX/UI do sistema
+6. Implementar sistema de busca avançada
+7. Adicionar filtros adicionais nas listagens
+8. Implementar sistema de exportação de dados
 
 ## Observações
 - Sistema em desenvolvimento ativo
 - Foco em simplicidade e usabilidade
 - Remoção bem-sucedida do sistema de pagamentos
 - Preparado para futuras expansões
+- Logging implementado para debugging
+- Tratamento de erros robusto

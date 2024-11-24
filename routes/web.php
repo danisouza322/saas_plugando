@@ -11,6 +11,7 @@ use App\Livewire\User\EditProfile;
 use App\Livewire\User\IndexUsers;
 use App\Livewire\Certificado\IndexCertificados;
 use App\Livewire\Dashboard\Index as DashboardIndex;
+use App\Livewire\Tarefas\Index as TarefasIndex;
 use App\Http\Controllers\HomeController;
 
 /*
@@ -73,6 +74,11 @@ Route::middleware(['auth', 'verified'])->prefix('painel')->name('painel.')->grou
     // Certificados (acessível por super-admin e user)
     Route::prefix('certificados')->name('certificados.')->middleware(['check.certificado'])->group(function () {
         Route::get('/', IndexCertificados::class)->name('index');
+    });
+
+    // Tarefas (acessível por super-admin e user)
+    Route::prefix('tarefas')->name('tarefas.')->group(function () {
+        Route::get('/', TarefasIndex::class)->name('index');
     });
 });
 
