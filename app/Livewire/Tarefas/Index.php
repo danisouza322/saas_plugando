@@ -66,12 +66,12 @@ class Index extends Component
 
     public function createTarefa()
     {
-        $this->dispatch('showModal');
+        $this->dispatch('openTarefaModal');
     }
 
     public function editTarefa($tarefa_id)
     {
-        $this->dispatch('showModal', ['tarefa_id' => $tarefa_id]);
+        $this->dispatch('openTarefaModal', ['tarefa_id' => $tarefa_id]);
     }
 
     public function confirmDelete($id)
@@ -130,6 +130,13 @@ class Index extends Component
     public function toggleViewAll()
     {
         $this->showAllTasks = !$this->showAllTasks;
+    }
+
+    public function showComentarios($tarefa_id)
+    {
+        logger()->info('showComentarios chamado:', ['tarefa_id' => $tarefa_id]);
+        $this->dispatch('openComentariosModal', ['tarefa_id' => $tarefa_id]);
+        logger()->info('Evento openComentariosModal disparado');
     }
 
     public function render()

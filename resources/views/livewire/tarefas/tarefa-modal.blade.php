@@ -162,38 +162,27 @@
     @push('scripts')
     <script>
         document.addEventListener('livewire:initialized', () => {
-            // Inicializa o Select2
-            if (typeof jQuery !== 'undefined') {
+            // Inicializa Select2 para os selects
+            if (jQuery().select2) {
                 $('.select2').select2({
-                    theme: 'bootstrap-5'
+                    theme: 'bootstrap-5',
+                    dropdownParent: $('#createTask')
                 });
             }
 
-            // Fecha o modal
-            @this.on('close-modal', () => {
-                const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('createTask'));
-                if (modal) {
-                    modal.hide();
+            // Inicializa tooltips
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(tooltip) {
+                new bootstrap.Tooltip(tooltip);
+            });
+
+            // Reinicializa Select2 após o modal ser mostrado
+            document.getElementById('createTask').addEventListener('shown.bs.modal', function () {
+                if (jQuery().select2) {
+                    $('.select2').select2({
+                        theme: 'bootstrap-5',
+                        dropdownParent: $('#createTask')
+                    });
                 }
-            });
-
-            // Gerencia notificações
-            @this.on('success', (message) => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Sucesso!',
-                    text: message,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            });
-
-            @this.on('error', (message) => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erro!',
-                    text: message
-                });
             });
         });
     </script>

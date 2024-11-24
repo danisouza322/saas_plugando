@@ -93,35 +93,8 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 5. Criar tabela planos
-        Schema::create('planos', function (Blueprint $table) {
-            $table->id();
-            $table->string('nome');
-            $table->string('slug')->unique();
-            $table->string('descricao')->nullable();
-            $table->decimal('valor', 10, 2);
-            $table->integer('dias_teste')->default(7);
-            $table->json('recursos')->nullable();
-            $table->boolean('ativo')->default(true);
-            $table->timestamps();
-            $table->softDeletes();
-        });
 
-        // 6. Criar tabela asaas_cobrancas
-        Schema::create('asaas_cobrancas', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
-            $table->string('asaas_id')->unique(); // Adicionado unique
-            $table->string('status');
-            $table->decimal('valor', 10, 2);
-            $table->date('vencimento');
-            $table->string('url_boleto')->nullable();
-            $table->string('linha_digitavel')->nullable();
-            $table->string('qrcode')->nullable();
-            $table->string('qrcode_text')->nullable();
-            $table->timestamps();
-            $table->softDeletes(); // Adicionado softDeletes
-        });
+       
 
         // 7. Criar tabela enderecos
         Schema::create('enderecos', function (Blueprint $table) {

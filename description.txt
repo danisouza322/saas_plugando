@@ -122,6 +122,129 @@
    - Melhorias na UX com confirmações e feedback
    - Logging detalhado para debugging
 
+## GUIA PARA CRIAÇÃO DE MODAIS NO SISTEMA
+
+1. ESTRUTURA DE ARQUIVOS
+-----------------------
+- Component PHP: app/Livewire/[Módulo]/[Nome]Modal.php
+- View Blade: resources/views/livewire/[módulo]/[nome]-modal.blade.php
+- JavaScript: public/build/js/[módulo].js (se necessário)
+
+2. COMPONENT PHP
+---------------
+```php
+namespace App\Livewire\[Módulo];
+
+use Livewire\Component;
+
+class [Nome]Modal extends Component
+{
+    // Propriedades públicas para bind com o form
+    public $item = null;
+    
+    // Definir listener para o evento de abertura
+    protected $listeners = ['open[Nome]Modal' => 'showModal'];
+    
+    // Método para resetar o form
+    private function resetForm()
+    {
+        $this->item = null;
+    }
+    
+    // Método chamado pelo evento
+    public function showModal($data = null)
+    {
+        $this->resetForm();
+        if (isset($data['item_id'])) {
+            $this->loadItem($data['item_id']);
+        }
+    }
+    
+    public function render()
+    {
+        return view('livewire.[módulo].[nome]-modal');
+    }
+}
+```
+
+3. VIEW BLADE
+------------
+```html
+<div>
+    <div wire:ignore.self class="modal fade" id="[nome]Modal" 
+         tabindex="-1" aria-labelledby="[nome]ModalLabel" 
+         aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="[nome]ModalLabel">
+                        Título do Modal
+                    </h5>
+                    <button type="button" class="btn-close" 
+                            data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Conteúdo do Modal -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+4. JAVASCRIPT (app.blade.php)
+---------------------------
+```javascript
+// Inicialização do Modal
+Livewire.on('open[Nome]Modal', () => {
+    const modalEl = document.getElementById('[nome]Modal');
+    if (modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
+});
+```
+
+5. REGISTRAR COMPONENTE
+----------------------
+Em AppServiceProvider.php:
+```php
+public function boot(): void
+{
+    Livewire::component('[módulo].[nome]-modal', \App\Livewire\[Módulo]\[Nome]Modal::class);
+}
+```
+
+6. CHAMANDO O MODAL
+------------------
+No componente que vai abrir o modal:
+```php
+public function show[Nome]($item_id)
+{
+    $this->dispatch('open[Nome]Modal', ['item_id' => $item_id]);
+}
+```
+
+7. BOAS PRÁTICAS
+---------------
+- Use wire:ignore.self no modal para evitar re-renderização
+- Sempre resete o form ao abrir o modal
+- Use data-bs-backdrop="static" para controle do modal
+- Evite usar .to() no dispatch do evento
+- Mantenha a lógica de negócios no componente PHP
+- Use logs para debug quando necessário
+- Trate erros adequadamente
+- Valide inputs antes de salvar
+
+8. TROUBLESHOOTING
+-----------------
+- Se o modal não abre: Verifique se o evento está sendo disparado e capturado
+- Se há dupla atualização: Remova .to() do dispatch
+- Se o modal fecha inesperadamente: Adicione data-bs-backdrop="static"
+- Se o form não reseta: Verifique o método resetForm()
+- Se há erros de JavaScript: Verifique o console do navegador
+
 ## Próximos Passos Sugeridos
 1. Implementar testes automatizados
 2. Melhorar documentação do código

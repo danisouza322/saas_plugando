@@ -21,12 +21,13 @@ class TarefaModal extends Component
     public $clientes;
     public $usuarios;
     public $tarefa = [];
+    public $tarefa_model = null;
     public $tarefa_id;
     public $responsaveis = [];
     public $arquivos = [];
     public $arquivos_existentes = [];
 
-    protected $listeners = ['showModal'];
+    protected $listeners = ['openTarefaModal' => 'showModal'];
 
     protected $rules = [
         'tarefa.titulo' => 'required|min:3',
@@ -66,20 +67,16 @@ class TarefaModal extends Component
                              ->where('id', '!=', $this->user_id)
                              ->get();
 
+        $this->resetForm();
         if ($tarefa_id) {
-            $this->tarefa_id = $tarefa_id;
-            $this->loadTarefa();
-        } else {
-            $this->tarefa = [
-                'empresa_id' => $this->empresa_id,
-                'status' => 'novo'
-            ];
+            $this->loadTarefa($tarefa_id);
         }
     }
 
     private function resetForm()
     {
         $this->tarefa_id = null;
+        $this->tarefa_model = null;
         $this->tarefa = [
             'empresa_id' => $this->empresa_id,
             'cliente_id' => '',
@@ -92,46 +89,48 @@ class TarefaModal extends Component
         $this->responsaveis = [];
         $this->arquivos = [];
         $this->arquivos_existentes = [];
-        
-        // Recarrega a lista de usuários excluindo o usuário atual
-        $this->usuarios = User::where('empresa_id', $this->empresa_id)
-                            ->where('id', '!=', $this->user_id)
-                            ->get();
     }
 
-    public function showModal($tarefa_id = null)
+    private function loadTarefa($tarefa_id)
+    {
+        try {
+            $this->tarefa_id = $tarefa_id;
+            $this->tarefa_model = Tarefa::where('empresa_id', $this->empresa_id)
+                                      ->with(['responsaveis', 'arquivos'])
+                                      ->findOrFail($tarefa_id);
+
+            $this->tarefa = $this->tarefa_model->toArray();
+            $this->responsaveis = $this->tarefa_model->responsaveis->pluck('id')->toArray();
+            $this->arquivos_existentes = $this->tarefa_model->arquivos;
+
+            $this->dispatch('modal-updated');
+        } catch (\Exception $e) {
+            logger()->error('Erro ao carregar tarefa:', [
+                'error' => $e->getMessage(),
+                'tarefa_id' => $tarefa_id
+            ]);
+            
+            $this->dispatch('showToast', [
+                'message' => 'Erro ao carregar tarefa: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    public function showModal($data = null)
     {
         $this->resetForm();
         
-        if (isset($tarefa_id['tarefa_id'])) {
-            $tarefa_id = $tarefa_id['tarefa_id'];
-        }
-        
-        if ($tarefa_id) {
-            $tarefa = Tarefa::with('responsaveis', 'arquivos')->where('empresa_id', Auth::user()->empresa_id)
-                           ->findOrFail($tarefa_id);
-            
-            $this->tarefa_id = $tarefa_id;
-            $this->tarefa = [
-                'empresa_id' => $tarefa->empresa_id,
-                'cliente_id' => $tarefa->cliente_id,
-                'titulo' => $tarefa->titulo,
-                'descricao' => $tarefa->descricao,
-                'prioridade' => $tarefa->prioridade,
-                'data_vencimento' => $tarefa->data_vencimento->format('Y-m-d'),
-                'status' => $tarefa->status,
-                'criado_por' => $tarefa->criado_por
-            ];
-            $this->responsaveis = $tarefa->responsaveis->pluck('id')->toArray();
-            $this->arquivos_existentes = $tarefa->arquivos;
+        if (isset($data['tarefa_id'])) {
+            $this->loadTarefa($data['tarefa_id']);
         }
     }
 
     public function save()
     {
-        $this->validate();
-
         try {
+            $this->validate();
+
             DB::beginTransaction();
 
             if ($this->tarefa_id) {
@@ -194,9 +193,10 @@ class TarefaModal extends Component
             $this->dispatch('hideModal');
             $this->dispatch('tarefaUpdated');
             $this->dispatch('showToast', [
+                'type' => 'success',
                 'message' => $message,
-                'type' => 'success'
             ]);
+
             $this->resetForm();
 
         } catch (\Exception $e) {

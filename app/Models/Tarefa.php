@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\ArquivoTarefa;
+use App\Models\TarefaComentario;
+use App\Models\Empresa;
+use App\Models\Cliente;
+use App\Models\User;
 
 class Tarefa extends Model
 {
@@ -42,9 +47,14 @@ class Tarefa extends Model
         return $this->belongsTo(Cliente::class);
     }
 
-    public function arquivos(): HasMany
+    public function arquivos()
     {
         return $this->hasMany(ArquivoTarefa::class);
+    }
+
+    public function comentarios()
+    {
+        return $this->hasMany(TarefaComentario::class)->whereNull('parent_id')->with(['user', 'respostas.user'])->latest();
     }
 
     public function criador(): BelongsTo

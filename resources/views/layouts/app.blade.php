@@ -1,5 +1,4 @@
 @extends('layouts.master')
-<!-- CSS e outros links -->
 @section('title')
 {{ $titulo ?? 'Dashboard' }}
 @endsection
@@ -7,89 +6,81 @@
 {{ $slot }}
 @endsection
 @section('script')
-//<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<!-- Scripts principais -->
 <script src="{{ URL::asset('build/js/app.js') }}"></script>
 <script src="{{ URL::asset('build/js/pages/profile-setting.init.js') }}"></script>
 <script src="{{ URL::asset('build/js/clientes.js') }}"></script>
 <script src="{{ URL::asset('build/js/certificados.js') }}"></script>
 <script src="{{ URL::asset('build/js/tarefas.js') }}"></script>
-<script src="{{ URL::asset('build/js/tasks.js') }}"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+<!-- jQuery (antes de todos os outros scripts) -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap Bundle com Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
 <!-- Sweet Alerts js -->
 <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <!-- Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     
 <script>
-        document.addEventListener('livewire:initialized', () => {
+    document.addEventListener('livewire:initialized', () => {
+        // Configuração do Toastr
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: 'toast-top-right',
+            timeOut: 3000
+        };
 
-            Livewire.on('closeModal', () => {
-                // Fechar o modal de certificado
-                var modalEl = document.getElementById('certificadoModal');
-                var modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) {
-                    modal.hide();
-                }
+        // Listener para mostrar toasts
+        Livewire.on('showToast', (data) => {
+            toastr[data.type](data.message);
+        });
+
+        // Avatar
+        Livewire.on('avatarUpdated', (avatarUrl) => {
+            console.log('Evento avatarUpdated recebido:', avatarUrl);
+            const headerAvatar = document.getElementById('header-avatar');
+            if (headerAvatar) {
+                headerAvatar.src = avatarUrl + '?t=' + new Date().getTime();
+            }
+            toastr.success('Avatar atualizado com sucesso!');
+        });
+
+        // Inicializa todos os modais
+        Livewire.on('hideModal', () => {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modalEl => {
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
             });
+        });
 
-            // Removendo o listener showToast daqui para evitar duplicação
-            
-            Livewire.on('avatarUpdated', (avatarUrl) => {
-                console.log('Evento avatarUpdated recebido:', avatarUrl); // Log para depuração
+        // Modal de Tarefas
+        Livewire.on('openTarefaModal', () => {
+            const modalEl = document.getElementById('createTask');
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            }
+        });
 
-                // Selecionar o elemento do avatar na top bar
-                const headerAvatar = document.getElementById('header-avatar');
-
-                if (headerAvatar) {
-                    // Atualizar o atributo 'src' com o novo URL do avatar
-                    headerAvatar.src = avatarUrl + '?t=' + new Date().getTime();
-                }
-
-                // Exibir uma notificação usando Toastr
-                toastr.success('Avatar atualizado com sucesso!');
-            });
-
-                // Listener para abrir o modal de criação de tarefas
-                Livewire.on('openCreateTaskModal', () => {
-                    var createTaskModal = new bootstrap.Modal(document.getElementById('createTaskModal'), {
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-                    createTaskModal.show();
-                });
-
-                // Listener para fechar o modal de criação de tarefas após a submissão
-                Livewire.on('closeCreateTaskModal', () => {
-                    var createTaskModalEl = document.getElementById('createTaskModal');
-                    var createTaskModal = bootstrap.Modal.getInstance(createTaskModalEl);
-                    if (createTaskModal) {
-                        createTaskModal.hide();
-                    }
-                });
-
-              // Abrir o modal de edição de tarefas
-                    Livewire.on('openEditTaskModal', () => {
-                        var editTaskModal = new bootstrap.Modal(document.getElementById('editTaskModal'), {
-                            backdrop: 'static',
-                            keyboard: false
-                        });
-                        editTaskModal.show();
-                    });
-
-                    // Fechar o modal de edição de tarefas
-                    Livewire.on('closeEditTaskModal', () => {
-                        var editTaskModalEl = document.getElementById('editTaskModal');
-                        var editTaskModal = bootstrap.Modal.getInstance(editTaskModalEl);
-                        if (editTaskModal) {
-                            editTaskModal.hide();
-                        }
-                    });
-                        });
-
-    </script>
-    <!-- Adicionar o script para escutar o evento Livewire -->
-   
+        // Modal de Comentários
+        Livewire.on('openComentariosModal', () => {
+            console.log('Evento openComentariosModal recebido');
+            const modalEl = document.getElementById('comentariosModal');
+            if (modalEl) {
+                console.log('Modal encontrado:', modalEl);
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            } else {
+                console.error('Modal não encontrado: comentariosModal');
+            }
+        });
+    });
+</script>
 @endsection

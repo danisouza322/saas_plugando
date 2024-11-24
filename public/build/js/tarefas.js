@@ -11,41 +11,47 @@ document.addEventListener('DOMContentLoaded', function() {
     const menuBtn = document.querySelector('.file-menu-btn');
     const sidebar = document.querySelector('.file-manager-sidebar');
 
-    if (menuBtn) {
+    if (menuBtn && sidebar) {
         menuBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('show');
+            if (sidebar.classList) {
+                sidebar.classList.toggle('show');
+            }
+        });
+
+        // Fechar sidebar ao clicar fora em dispositivos móveis
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth < 992 && 
+                !e.target.closest('.file-manager-sidebar') && 
+                !e.target.closest('.file-menu-btn')) {
+                if (sidebar.classList) {
+                    sidebar.classList.remove('show');
+                }
+            }
         });
     }
-
-    // Fechar sidebar ao clicar fora em dispositivos móveis
-    document.addEventListener('click', function(e) {
-        if (window.innerWidth < 992 && 
-            !e.target.closest('.file-manager-sidebar') && 
-            !e.target.closest('.file-menu-btn')) {
-            sidebar.classList.remove('show');
-        }
-    });
 
     // Drag and Drop para status das tarefas
     const draggableTasks = document.querySelectorAll('.draggable-task');
     const dropZones = document.querySelectorAll('.status-dropzone');
 
-    draggableTasks.forEach(task => {
-        task.addEventListener('dragstart', handleDragStart);
-        task.addEventListener('dragend', handleDragEnd);
-    });
+    if (draggableTasks.length > 0 && dropZones.length > 0) {
+        draggableTasks.forEach(task => {
+            task.addEventListener('dragstart', handleDragStart);
+            task.addEventListener('dragend', handleDragEnd);
+        });
 
-    dropZones.forEach(zone => {
-        zone.addEventListener('dragover', handleDragOver);
-        zone.addEventListener('dragleave', handleDragLeave);
-        zone.addEventListener('drop', handleDrop);
-    });
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('dragleave', handleDragLeave);
+            zone.addEventListener('drop', handleDrop);
+        });
+    }
 
     // Preview de arquivos
     const fileInput = document.querySelector('input[type="file"]');
     const previewContainer = document.querySelector('.file-preview-container');
 
-    if (fileInput) {
+    if (fileInput && previewContainer) {
         fileInput.addEventListener('change', function(e) {
             if (previewContainer) {
                 previewContainer.innerHTML = '';
@@ -60,26 +66,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Funções auxiliares para Drag and Drop
 function handleDragStart(e) {
-    this.classList.add('dragging');
+    if (this.classList) {
+        this.classList.add('dragging');
+    }
     e.dataTransfer.setData('text/plain', this.dataset.taskId);
 }
 
 function handleDragEnd(e) {
-    this.classList.remove('dragging');
+    if (this.classList) {
+        this.classList.remove('dragging');
+    }
 }
 
 function handleDragOver(e) {
     e.preventDefault();
-    this.classList.add('drag-over');
+    if (this.classList) {
+        this.classList.add('drag-over');
+    }
 }
 
 function handleDragLeave(e) {
-    this.classList.remove('drag-over');
+    if (this.classList) {
+        this.classList.remove('drag-over');
+    }
 }
 
 function handleDrop(e) {
     e.preventDefault();
-    this.classList.remove('drag-over');
+    if (this.classList) {
+        this.classList.remove('drag-over');
+    }
     
     const taskId = e.dataTransfer.getData('text/plain');
     const newStatus = this.dataset.status;

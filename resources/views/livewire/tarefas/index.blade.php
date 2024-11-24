@@ -87,7 +87,6 @@
                                         <td>
                                             <div class="form-check">
                                                 <input class="form-check-input task-checkbox" type="checkbox"
-                                                    wire:model.live="tarefas.{{ $loop->index }}.status"
                                                     wire:change="toggleStatus({{ $tarefa->id }})"
                                                     {{ $tarefa->status === 'concluido' ? 'checked' : '' }}>
                                             </div>
@@ -116,7 +115,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 @foreach($tarefa->responsaveis as $responsavel)
-                                                    <div class="avatar-xs me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $responsavel->name }}">
+                                                    <div class="avatar-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $responsavel->name }}">
                                                         @if($responsavel->profile_photo_url)
                                                             <img src="{{ $responsavel->profile_photo_url }}" alt="{{ $responsavel->name }}" class="rounded-circle">
                                                         @else
@@ -140,14 +139,23 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <div class="hstack gap-2">
-                                                <button class="btn btn-sm btn-soft-primary" wire:click="editTarefa({{ $tarefa->id }})">
-                                                    <i class="ri-edit-2-line"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-soft-danger" wire:click="confirmDelete({{ $tarefa->id }})">
-                                                    <i class="ri-delete-bin-2-line"></i>
-                                                </button>
-                                            </div>
+                                            <ul class="list-inline hstack gap-2 mb-0">
+                                                <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Comentários">
+                                                    <a href="javascript:void(0);" wire:click="showComentarios({{ $tarefa->id }})" class="text-primary d-inline-block">
+                                                        <i class="ri-chat-3-line fs-16"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Editar">
+                                                    <a href="javascript:void(0);" wire:click="editTarefa({{ $tarefa->id }})" class="text-primary d-inline-block">
+                                                        <i class="ri-pencil-line fs-16"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Excluir">
+                                                    <a class="text-danger d-inline-block" wire:click="confirmDelete({{ $tarefa->id }})" role="button">
+                                                        <i class="ri-delete-bin-5-line fs-16"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </td>
                                     </tr>
                                 @empty
@@ -164,5 +172,7 @@
     </div>
 
     <!-- Modal de Tarefa -->
-    @livewire('tarefas.tarefa-modal')
+@livewire('tarefas.tarefa-modal')
+<!-- Modal de Comentários -->
+@livewire('tarefas.comentarios-modal', ['tarefa_id' => null], key('comentarios-modal'))
 </div>
