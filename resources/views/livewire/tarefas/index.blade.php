@@ -111,7 +111,7 @@
                                         <td>
                                             <div class="form-check">
                                                 <input class="form-check-input task-checkbox" type="checkbox"
-                                                    wire:click="toggleStatus({{ $tarefa->id }})"
+                                                    wire:click.prevent="toggleStatus({{ $tarefa->id }})"
                                                     @checked($tarefa->status === 'concluido')>
                                             </div>
                                         </td>

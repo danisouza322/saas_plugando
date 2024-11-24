@@ -21,6 +21,34 @@ class Index extends Component
     public $statusFilter = '';
     public $tarefaId = null;
 
+    protected $listeners = ['tarefaUpdated' => '$refresh'];
+
+    public function toggleStatus($tarefaId)
+    {
+        try {
+            $tarefa = Tarefa::where('empresa_id', Auth::user()->empresa_id)
+                           ->findOrFail($tarefaId);
+            
+            $tarefa->status = $tarefa->status === 'concluido' ? 'novo' : 'concluido';
+            $tarefa->save();
+
+            $this->dispatch('showToast', [
+                'message' => 'Status da tarefa atualizado com sucesso!',
+                'type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            logger()->error('Erro ao atualizar status da tarefa:', [
+                'error' => $e->getMessage(),
+                'tarefa_id' => $tarefaId
+            ]);
+            
+            $this->dispatch('showToast', [
+                'message' => 'Erro ao atualizar status da tarefa: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
     public function createTarefa()
     {
         $this->dispatch('showModal');

@@ -135,58 +135,12 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// Notificações
-Livewire.on('showToast', (data) => {
-    const message = typeof data === 'string' ? data : (data.message || 'Operação realizada com sucesso');
-    const type = data.type || 'success';
-    const background = type === 'success'
-        ? "linear-gradient(to right, #00b09b, #96c93d)"
-        : "linear-gradient(to right, #ff5f6d, #ffc371)";
-
-    Toastify({
-        text: message,
-        duration: 3000,
-        close: true,
-        gravity: "top",
-        position: "right",
-        style: {
-            background: background
-        }
-    }).showToast();
-});
-
 document.addEventListener('livewire:initialized', () => {
     // Inicializa Select2
-    if (typeof jQuery !== 'undefined') {
-        $('.select2').select2({
-            theme: 'bootstrap-5'
-        });
-    }
-
-    // Gerencia notificações
-    Livewire.on('success', (message) => {
-        console.log('Sucesso:', message);
-        Swal.fire({
-            icon: 'success',
-            title: 'Sucesso!',
-            text: message,
-            showConfirmButton: false,
-            timer: 1500
-        });
-    });
-
-    Livewire.on('error', (message) => {
-        console.error('Erro:', message);
-        Swal.fire({
-            icon: 'error',
-            title: 'Erro!',
-            text: message
-        });
-    });
+    initializeSelect2();
 
     // Confirmação de exclusão
     Livewire.on('confirmDelete', (data) => {
-        console.log('confirmDelete recebido:', data);
         Swal.fire({
             title: 'Tem certeza?',
             text: "Esta ação não pode ser desfeita!",
@@ -198,109 +152,121 @@ document.addEventListener('livewire:initialized', () => {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                console.log('Confirmado, enviando deleteTarefa');
                 Livewire.dispatch('deleteTarefa');
             }
         });
     });
 
     // Gerencia o modal
-    let currentModal = null;
+    let modal = null;
 
-    function cleanupModal() {
-        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-        document.body.classList.remove('modal-open');
-        document.body.style.removeProperty('overflow');
-        document.body.style.removeProperty('padding-right');
+    function hideModal() {
+        const modalEl = document.getElementById('createTask');
+        if (modalEl) {
+            modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) {
+                modal.hide();
+            }
+            // Limpa backdrop e classes do body
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+        }
     }
 
     // Eventos do Livewire
     Livewire.on('showModal', () => {
-        cleanupModal(); // Limpa qualquer modal residual
         const modalEl = document.getElementById('createTask');
         if (modalEl) {
-            currentModal = new bootstrap.Modal(modalEl);
-            currentModal.show();
+            modal = new bootstrap.Modal(modalEl);
+            modal.show();
+            initializeSelect2();
         }
     });
 
-    Livewire.on('closeModal', () => {
-        if (currentModal) {
-            currentModal.hide();
-            setTimeout(cleanupModal, 300); // Espera a animação terminar
-        }
+    Livewire.on('hideModal', () => {
+        hideModal();
     });
 
     // Limpa o modal quando fechado manualmente
     const modalEl = document.getElementById('createTask');
     if (modalEl) {
-        modalEl.addEventListener('hidden.bs.modal', function () {
-            setTimeout(cleanupModal, 300);
+        modalEl.addEventListener('hidden.bs.modal', () => {
+            hideModal();
             Livewire.dispatch('closeModal');
         });
     }
 
-    // Inicializar tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
+    // Atualiza Select2 quando uma tarefa é atualizada
+    Livewire.on('tarefaUpdated', () => {
+        initializeSelect2();
     });
 
-    // Manipulador do menu mobile
-    const menuBtn = document.querySelector('.file-menu-btn');
-    const sidebar = document.querySelector('.file-manager-sidebar');
+    // Notificações com Toastify
+    Livewire.on('showToast', (data) => {
+        const message = data.message || 'Operação realizada com sucesso';
+        const type = data.type || 'success';
+        
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            stopOnFocus: true,
+            close: true,
+            style: {
+                background: type === 'success' 
+                    ? "linear-gradient(to right, #00b09b, #96c93d)"
+                    : "linear-gradient(to right, #ff5f6d, #ffc371)",
+            }
+        }).showToast();
+    });
+});
 
-    if (menuBtn) {
-        menuBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('show');
+// Função para inicializar o Select2
+function initializeSelect2() {
+    if (typeof jQuery !== 'undefined') {
+        $('.select2').select2({
+            theme: 'bootstrap-5'
         });
     }
+}
 
-    // Fechar sidebar ao clicar fora em dispositivos móveis
-    document.addEventListener('click', function(e) {
-        if (window.innerWidth < 992 && 
-            !e.target.closest('.file-manager-sidebar') && 
-            !e.target.closest('.file-menu-btn')) {
-            sidebar.classList.remove('show');
-        }
-    });
-});
+// Livewire.on('taskCreated', () => {
+//     Swal.fire({
+//         icon: 'success',
+//         title: 'Sucesso!',
+//         text: 'Tarefa criada com sucesso!',
+//         showConfirmButton: false,
+//         timer: 1500
+//     });
+// });
 
-// Manipulador de eventos Livewire
-Livewire.on('taskCreated', () => {
-    Swal.fire({
-        icon: 'success',
-        title: 'Sucesso!',
-        text: 'Tarefa criada com sucesso!',
-        showConfirmButton: false,
-        timer: 1500
-    });
-});
+// Livewire.on('taskUpdated', () => {
+//     Swal.fire({
+//         icon: 'success',
+//         title: 'Sucesso!',
+//         text: 'Tarefa atualizada com sucesso!',
+//         showConfirmButton: false,
+//         timer: 1500
+//     });
+// });
 
-Livewire.on('taskUpdated', () => {
-    Swal.fire({
-        icon: 'success',
-        title: 'Sucesso!',
-        text: 'Tarefa atualizada com sucesso!',
-        showConfirmButton: false,
-        timer: 1500
-    });
-});
+// Livewire.on('taskDeleted', () => {
+//     Swal.fire({
+//         icon: 'success',
+//         title: 'Sucesso!',
+//         text: 'Tarefa excluída com sucesso!',
+//         showConfirmButton: false,
+//         timer: 1500
+//     });
+// });
 
-Livewire.on('taskDeleted', () => {
-    Swal.fire({
-        icon: 'success',
-        title: 'Sucesso!',
-        text: 'Tarefa excluída com sucesso!',
-        showConfirmButton: false,
-        timer: 1500
-    });
-});
-
-Livewire.on('error', (message) => {
-    Swal.fire({
-        icon: 'error',
-        title: 'Erro!',
-        text: message
-    });
-});
+// Livewire.on('error', (message) => {
+//     Swal.fire({
+//         icon: 'error',
+//         title: 'Erro!',
+//         text: message
+//     });
+// });

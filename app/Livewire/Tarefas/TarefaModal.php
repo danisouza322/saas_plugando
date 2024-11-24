@@ -187,9 +187,12 @@ class TarefaModal extends Component
 
             DB::commit();
             
-            $this->dispatch('success', $message);
-            $this->dispatch('refresh-list');
-            $this->dispatch('close-modal');
+            $this->dispatch('hideModal');
+            $this->dispatch('tarefaUpdated');
+            $this->dispatch('showToast', [
+                'message' => $message,
+                'type' => 'success'
+            ]);
             $this->resetForm();
 
         } catch (\Exception $e) {
@@ -199,7 +202,10 @@ class TarefaModal extends Component
                 'tarefa' => $this->tarefa,
                 'responsaveis' => $this->responsaveis
             ]);
-            $this->dispatch('error', 'Erro ao salvar tarefa: ' . $e->getMessage());
+            $this->dispatch('showToast', [
+                'message' => 'Erro ao salvar tarefa: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
     }
 
